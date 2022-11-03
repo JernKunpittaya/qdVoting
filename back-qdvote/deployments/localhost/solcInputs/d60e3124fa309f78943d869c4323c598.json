@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/QuadraticVoting.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity >=0.4.0 <0.9.0;\n\n//test\ncontract QuadraticVoting {\n    struct Item {\n        address payable owner;\n        uint256 amount;\n        bytes32 title;\n        // string imageHash; // IPFS cid\n        string description;\n        mapping(address => uint256) positiveVotes; // user => weight\n        mapping(address => uint256) negativeVotes; // user => weight\n        uint256 totalPositiveWeight;\n        uint256 totalNegativeWeight;\n    }\n    uint256 public constant voteCost = 10_000_000_000; // wei\n\n    mapping(uint256 => Item) public items; // itemId => id\n    uint256 public itemCount = 0; // also next itemId\n\n    event ItemCreated(uint256 itemId);\n    event Voted(uint256 itemId, uint256 weight, bool positive);\n\n    function currentWeight(\n        uint256 itemId,\n        address addr,\n        bool isPositive\n    ) public view returns (uint256) {\n        if (isPositive) {\n            return items[itemId].positiveVotes[addr];\n        } else {\n            return items[itemId].negativeVotes[addr];\n        }\n    }\n\n    function calcCost(uint256 currWeight, uint256 weight)\n        public\n        pure\n        returns (uint256)\n    {\n        if (currWeight > weight) {\n            return weight * weight * voteCost; // cost is always quadratic\n        } else if (currWeight < weight) {\n            // this allows users to save on costs if they are increasing their vote\n            // example: current weight is 3, they want to change it to 5\n            // this would cost 16x (5 * 5 - 3 * 3) instead of 25x the vote cost\n            return (weight * weight - currWeight * currWeight) * voteCost;\n        } else {\n            return 0;\n        }\n    }\n\n    function createItem(\n        bytes32 title,\n        //string memory imageHash,\n        string memory description\n    ) public {\n        uint256 itemId = itemCount++;\n        Item storage item = items[itemId];\n        item.owner = payable(msg.sender);\n        item.title = title;\n        //item.imageHash = imageHash;\n        item.description = description;\n        emit ItemCreated(itemId);\n    }\n\n    function positiveVote(uint256 itemId, uint256 weight) public payable {\n        Item storage item = items[itemId];\n        require(msg.sender != item.owner); // owners cannot vote on their own items\n\n        uint256 currWeight = item.positiveVotes[msg.sender];\n        if (currWeight == weight) {\n            return; // no need to process further if vote has not changed\n        }\n\n        uint256 cost = calcCost(currWeight, weight);\n        require(msg.value >= cost); // msg.value must be enough to cover the cost\n\n        item.positiveVotes[msg.sender] = weight;\n        item.totalPositiveWeight += weight - currWeight;\n\n        // weight cannot be both positive and negative simultaneously\n        item.totalNegativeWeight -= item.negativeVotes[msg.sender];\n        item.negativeVotes[msg.sender] = 0;\n\n        item.amount += msg.value; // reward creator of item for their contribution\n\n        emit Voted(itemId, weight, true);\n    }\n\n    function negativeVote(uint256 itemId, uint256 weight) public payable {\n        Item storage item = items[itemId];\n        require(msg.sender != item.owner);\n\n        uint256 currWeight = item.negativeVotes[msg.sender];\n        if (currWeight == weight) {\n            return; // no need to process further if vote has not changed\n        }\n\n        uint256 cost = calcCost(currWeight, weight);\n        require(msg.value >= cost); // msg.value must be enough to cover the cost\n\n        item.negativeVotes[msg.sender] = weight;\n        item.totalNegativeWeight += weight - currWeight;\n\n        // weight cannot be both positive and negative simultaneously\n        item.totalPositiveWeight -= item.positiveVotes[msg.sender];\n        item.positiveVotes[msg.sender] = 0;\n\n        // distribute voting cost to every item except for this one\n        uint256 reward = msg.value / (itemCount - 1);\n        for (uint256 i = 0; i < itemCount; i++) {\n            if (i != itemId) items[i].amount += reward;\n        }\n\n        emit Voted(itemId, weight, false);\n    }\n\n    function claim(uint256 itemId) public {\n        Item storage item = items[itemId];\n        require(msg.sender == item.owner);\n        item.owner.transfer(item.amount);\n        item.amount = 0;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
