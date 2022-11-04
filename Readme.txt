@@ -36,7 +36,8 @@ TypeError: Cannot read properties of undefined (reading 'itemCount')
 
 Test App
 -Import your localhost private key in Metamask, add localhost network and play around
-
+-Local host may get confused sometimes, so use setting--> advanced--> reset account for 
+your auto-generated address in metamask. [dont mess up your real account.]
 
 Note
 -My code is BAD especially frontend, there is NO consistency since I just try exploring 
