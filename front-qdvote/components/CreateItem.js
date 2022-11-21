@@ -3,6 +3,7 @@ import { abi, contractAddresses } from "../constants";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { utils } from "web3";
+import styles from "./CreateItem.module.css";
 export default function CreateItem() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -38,14 +39,16 @@ export default function CreateItem() {
   return (
     <div>
       {isWeb3Enabled && (
-        <div>
-          <form onSubmit={createItem}>
+        <div className={styles.section}>
+          <h2>Create Event</h2>
+          <form onSubmit={createItem} className={styles.forms}>
             <input
               type="text"
               value={title}
               placeholder="Title"
               required
               onChange={(e) => setTitle(e.target.value)}
+              className = {styles.input}
             />
             <br />
             <textarea
@@ -55,7 +58,7 @@ export default function CreateItem() {
               onChange={(e) => setDescription(e.target.value)}
             />
             <br />
-            <input type="submit" />
+            <input type="submit" className= {styles.button}/>
           </form>
           {/* <button onClick={itemCount}>Count Item</button> */}
         </div>

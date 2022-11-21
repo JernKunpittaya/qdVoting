@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { utils } from "web3";
 import Item from "./Item.js";
+import styles from "./Rankedlist.module.css";
 
 export default function Rankedlist() {
   const [Items, setItems] = useState([]);
@@ -73,10 +74,9 @@ export default function Rankedlist() {
   return (
     <div>
       <section>
-        <h1>Ranked List</h1>
-
+        <h1 className={styles.title}>Ranked List</h1>
         {isWeb3Enabled && (
-          <div>
+          <div className={styles.section}>
             {Items.map((item) => (
               <Item key={item.id} item={item} />
             ))}

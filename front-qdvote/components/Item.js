@@ -3,6 +3,7 @@ import { abi, contractAddresses } from "../constants";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { utils } from "web3";
+import styles from "./Item.module.css";
 export default function Item({ item }) {
   const [weight, setWeight] = useState(0);
   const [rep, setRep] = useState(0);
@@ -99,7 +100,7 @@ export default function Item({ item }) {
   //
   return (
     <div>
-      <h2>{item.title}</h2>
+      <h2 className={styles.title}>{item.title}</h2>
       <p>{item.description}</p>
       <p>{item.owner}</p>
       {account.toLowerCase() == item.owner.toLowerCase() && (
@@ -111,15 +112,15 @@ export default function Item({ item }) {
 
       {account.toLowerCase() != item.owner.toLowerCase() && (
         <div>
-          <button onClick={upvote}>Up</button>
+          <button onClick={upvote} className={styles.clear_button}>Up</button>
           <p>Upvotes: {item.positiveWeight.toNumber()}</p>
-          <button onClick={downvote}>Down</button>
+          <button onClick={downvote} className={styles.clear_button}>Down</button>
           <p>Downvotes: {item.negativeWeight.toNumber()}</p>
           {weight !== startWeight && (
             <div>
               <p>Weight: {weight}</p>
               <p>Cost: {cost / 1_000_000_000} gwei</p>
-              <button onClick={submitVote}>Submit Vote</button>
+              <button onClick={submitVote} className={styles.solid_button}>Submit Vote</button>
             </div>
           )}
         </div>
