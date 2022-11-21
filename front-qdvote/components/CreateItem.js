@@ -1,43 +1,72 @@
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { abi, contractAddresses } from "../constants";
 import { useState, useEffect } from "react";
+import { useContract } from "wagmi";
 import { ethers } from "ethers";
 import { utils } from "web3";
+import {
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  usePrepareContractWrite,
+} from "wagmi";
+// import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+// import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 export default function CreateItem() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
-  const chainId = parseInt(chainIdHex);
+  // const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
+  // const chainId = parseInt(chainIdHex);
+  const { address, isConnected } = useAccount();
+  const chainId = 31337;
   const quadraticVotingAddress =
     chainId in contractAddresses ? contractAddresses[chainId][0] : null;
-  //   const { runContractFunction: contractCount } = useWeb3Contract({
-  //     abi: abi,
-  //     contractAddress: quadraticVotingAddress,
-  //     functionName: "itemCount",
-  //     params: {},
-  //   });
-  const { runContractFunction: contractCreateItem } = useWeb3Contract({
+
+  // const { runContractFunction: contractCount } = useWeb3Contract({
+  //   abi: abi,
+  //   contractAddress: quadraticVotingAddress,
+  //   functionName: "itemCount",
+  //   params: {},
+  // });
+  // const { runContractFunction: contractCreateItem } = useWeb3Contract({
+  //   abi: abi,
+  //   contractAddress: quadraticVotingAddress,
+  //   functionName: "createItem",
+  //   params: {
+  //     title: ethers.utils.hexZeroPad(utils.utf8ToHex(title), 32),
+  //     description: description,
+  //   },
+  // });
+  const contractRead = useContractRead({
+    address: quadraticVotingAddress,
     abi: abi,
-    contractAddress: quadraticVotingAddress,
-    functionName: "createItem",
-    params: {
-      title: ethers.utils.hexZeroPad(utils.utf8ToHex(title), 32),
-      description: description,
-    },
+    functionName: "itemCount",
+    watch: true,
   });
+  const { config } = usePrepareContractWrite({
+    address: quadraticVotingAddress,
+    abi: abi,
+    functionName: "createItem",
+    args: [ethers.utils.hexZeroPad(utils.utf8ToHex(title), 32), description],
+  });
+  const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
   async function createItem(e) {
     e.preventDefault();
-    await contractCreateItem();
+    console.log("create ITEM jya");
+    console.log("status", isSuccess);
+    await write();
+    console.log("done");
   }
-  //   async function itemCount() {
-  //     console.log("counts:", parseInt(await contractCount()));
-  //     console.log("account:", account);
-  //   }
+  async function itemCount() {
+    const { data } = contractRead;
+    console.log("count:", parseInt(data));
+    console.log("address", address);
+  }
 
   return (
     <div>
-      {isWeb3Enabled && (
+      {isConnected && (
         <div>
           <form onSubmit={createItem}>
             <input
@@ -57,10 +86,10 @@ export default function CreateItem() {
             <br />
             <input type="submit" />
           </form>
-          {/* <button onClick={itemCount}>Count Item</button> */}
+          <button onClick={itemCount}>Count Item</button>
         </div>
       )}
-      {!isWeb3Enabled && (
+      {!isConnected && (
         <div>
           <h1>Welcome!</h1>
           <h2>connect ur wallet first!</h2>{" "}

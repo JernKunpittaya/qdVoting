@@ -13,8 +13,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
+      <h1>Before CreateItem</h1>
       <CreateItem />
-      <Rankedlist />
+      {/* <Rankedlist />  */}
       End of Page
     </div>
   );
