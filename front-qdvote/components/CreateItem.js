@@ -37,11 +37,10 @@ export default function CreateItem() {
   //     description: description,
   //   },
   // });
-  const contractRead = useContractRead({
+  const { refetch: contractCount } = useContractRead({
     address: quadraticVotingAddress,
     abi: abi,
     functionName: "itemCount",
-    watch: true,
   });
   const { config } = usePrepareContractWrite({
     address: quadraticVotingAddress,
@@ -59,7 +58,7 @@ export default function CreateItem() {
     console.log("done");
   }
   async function itemCount() {
-    const { data } = contractRead;
+    const { data } = await contractCount();
     console.log("count:", parseInt(data));
     console.log("address", address);
   }
