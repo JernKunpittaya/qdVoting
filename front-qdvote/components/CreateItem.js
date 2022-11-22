@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useContract } from "wagmi";
 import { ethers } from "ethers";
 import { utils } from "web3";
+import styles from "./CreateItem.module.css";
 import {
   useAccount,
   useContractRead,
@@ -67,13 +68,14 @@ export default function CreateItem() {
     <div>
       {isConnected && (
         <div>
-          <form onSubmit={createItem}>
+          <form onSubmit={createItem} className={styles.forms}>
             <input
               type="text"
               value={title}
               placeholder="Title"
               required
               onChange={(e) => setTitle(e.target.value)}
+              className={styles.input}
             />
             <br />
             <textarea
@@ -81,9 +83,11 @@ export default function CreateItem() {
               placeholder="Description"
               required
               onChange={(e) => setDescription(e.target.value)}
+              rows="3"
+              cols="40"
             />
             <br />
-            <input type="submit" />
+            <input type="submit" className={styles.button}/>
           </form>
           <button onClick={itemCount}>Count Item</button>
         </div>
