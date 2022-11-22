@@ -3,21 +3,22 @@ import { abi, contractAddresses } from "../constants";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { utils } from "web3";
+import styles from "./ShowEvents.module.css";
 
 export default function ShowEvents() {
     const [Events, setEvents] = useState([]);
     // hard code some events with an event array to mock display
     const event1 = {
         title: "Favorite Basketball Player",
-        id: 101
+        id: 1
     };
     const event2 = {
         title: "Where to vacation?",
-        id: 201
+        id: 2
     };
     const event3 = {
         title: "Best fruits",
-        id: 301
+        id: 3
     };
     function pushToArray() {
         const arr = [];
@@ -31,7 +32,10 @@ export default function ShowEvents() {
     return (
         <div>
             {Events.map((each) => (
-              <p>Event {each.id}: {each.title}</p>
+              <div className={styles.events}>Event {each.id}:
+              <br></br>
+              <br></br>
+              {each.title}</div>
             ))}
         </div>
       );
