@@ -21,7 +21,6 @@ export default function Home() {
       <CreateItem />
       {/* <Rankedlist />  */}
       </div>
-      
     </div>
   );
 }
