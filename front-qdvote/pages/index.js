@@ -14,7 +14,7 @@ export default function Home() {
       </Head>
       <Header />
       <CreateItem />
-      <Rankedlist />
+      {/* <Rankedlist /> */}
       {/* End of Page */}
     </div>
   );
