@@ -19,7 +19,7 @@ export default function Home() {
       </p>
       <h1>Before CreateItem</h1>
       <CreateItem />
-      {/* <Rankedlist />  */}
+      <Rankedlist /> 
       </div>
     </div>
   );

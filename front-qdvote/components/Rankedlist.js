@@ -3,27 +3,46 @@ import { abi, contractAddresses } from "../constants";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { utils } from "web3";
+import web3 from "web3"
 import Item from "./Item.js";
-
+import {
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  useContract,
+  usePrepareContractWrite,
+} from "wagmi";
 export default function Rankedlist() {
   const [Items, setItems] = useState([]);
   const [len, setLen] = useState(0);
-  const { chainId: chainIdHex, web3, isWeb3Enabled } = useMoralis();
-  const chainId = parseInt(chainIdHex);
+  // const { chainId: chainIdHex, web3, isWeb3Enabled } = useMoralis();
+  // const chainId = parseInt(chainIdHex);
+  const { address, isConnected } = useAccount();
+  const chainId = 31337;
   const quadraticVotingAddress =
     chainId in contractAddresses ? contractAddresses[chainId][0] : null;
   var contract;
   async function wait() {
-    if (isWeb3Enabled) {
-      contract = new ethers.Contract(
-        quadraticVotingAddress,
-        abi,
-        web3.getSigner()
-      );
+    if (isConnected) {
+      contract = useContract({
+        address: quadraticVotingAddress,
+        abi: abi,
+      })
       const final = await rankedItems();
       setLen(final.length);
     }
   }
+  // async function wait() {
+  //   if (isWeb3Enabled) {
+  //     contract = new ethers.Contract(
+  //       quadraticVotingAddress,
+  //       abi,
+  //       web3.getSigner()
+  //     );
+  //     const final = await rankedItems();
+  //     setLen(final.length);
+  //   }
+  // }
   wait();
   useEffect(() => {
     const set = async () => {
@@ -75,7 +94,7 @@ export default function Rankedlist() {
       <section>
         <h1>Ranked List</h1>
 
-        {isWeb3Enabled && (
+        {isConnected && (
           <div>
             {Items.map((item) => (
               <Item key={item.id} item={item} />
