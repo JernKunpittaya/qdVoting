@@ -3,6 +3,10 @@
     color: navy;
 }
 
+.title {
+    text-align: center;
+}
+
 .forms {
     background: #f6f9fc;
     text-align: center;

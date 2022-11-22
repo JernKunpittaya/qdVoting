@@ -4,6 +4,7 @@ import styles from "../styles/Home.module.css";
 import Header from "../components/Header";
 import CreateItem from "../components/CreateItem";
 import Rankedlist from "../components/Rankedlist";
+import ShowEvents from "../components/ShowEvents";
 export default function Home() {
   return (
     <div className={styles.container}>
@@ -14,6 +15,7 @@ export default function Home() {
       </Head>
       <Header />
       <CreateItem />
+      <ShowEvents />
       {/* <Rankedlist /> */}
       {/* End of Page */}
     </div>

@@ -34,7 +34,7 @@ export default function Rankedlist() {
     };
     set();
   }, [len]);
-  async function items(itemId) {
+  async function getItems(itemId) {
     const item = await contract.items(itemId);
     //
     if (item) {
@@ -60,7 +60,7 @@ export default function Rankedlist() {
     let itemsArr = [];
 
     for (let i = 0; i < count; i++) {
-      const item = await items(i);
+      const item = await getItems(i);
       if (item) itemsArr.push(item);
     }
     // console.log("Items", itemsArr);

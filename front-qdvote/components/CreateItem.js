@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { utils } from "web3";
 import styles from "./CreateItem.module.css";
+
 export default function CreateItem() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -40,7 +41,8 @@ export default function CreateItem() {
     <div>
       {isWeb3Enabled && (
         <div className={styles.section}>
-          <h2>Create Event</h2>
+          {/* <h2>Create Event</h2> */}
+          <h2 className={styles.title}>Enter an event {"📝"}</h2>
           <form onSubmit={createItem} className={styles.forms}>
             <input
               type="text"
@@ -56,6 +58,8 @@ export default function CreateItem() {
               placeholder="Description"
               required
               onChange={(e) => setDescription(e.target.value)}
+              rows="3"
+              cols="40"
             />
             <br />
             <input type="submit" className= {styles.button}/>
