@@ -26,9 +26,7 @@ export default function Home() {
         </Head>
         <Header />
         <button onClick={clickRanklist}>To Rankedlist</button>
-        {/* <CreateItem /> */}
         <ShowEvents />
-        {/* <Rankedlist /> */}
         {/* End of Page */}
     </div>
     )}

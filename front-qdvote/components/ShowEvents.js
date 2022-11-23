@@ -5,6 +5,7 @@ import { ethers } from "ethers";
 import { utils } from "web3";
 import styles from "./ShowEvents.module.css";
 import {logit} from "../pages/index.js";
+import { renderMatches } from "react-router";
 
 export default function ShowEvents() {
     const [Events, setEvents] = useState([]);
@@ -30,12 +31,14 @@ export default function ShowEvents() {
         arr.push(event1, event2, event3);
         return arr;
     }
+
     useEffect(() => {
-        setEvents(pushToArray());
+
     });
 
-    function createEvent() {
-
+    function createEvent(e) {
+        e.preventDefault();
+        setEvents([...Events, { title: title, id: id }]);
     };
 
     return (
