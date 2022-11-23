@@ -42,7 +42,7 @@ export default function CreateItem() {
       {isWeb3Enabled && (
         <div className={styles.section}>
           {/* <h2>Create Event</h2> */}
-          <h2 className={styles.title}>Enter an event {"📝"}</h2>
+          <h2 className={styles.title}>Enter an item to vote on {"📝"}</h2>
           <form onSubmit={createItem} className={styles.forms}>
             <input
               type="text"

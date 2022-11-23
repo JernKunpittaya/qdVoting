@@ -26,7 +26,7 @@ export default function Home() {
         </Head>
         <Header />
         <button onClick={clickRanklist}>To Rankedlist</button>
-        <CreateItem />
+        {/* <CreateItem /> */}
         <ShowEvents />
         {/* <Rankedlist /> */}
         {/* End of Page */}
@@ -41,6 +41,7 @@ export default function Home() {
         </Head>
         <Header />
         <button onClick={clickBack}>Back</button>
+        <CreateItem />
         <Rankedlist />
       </div>
     )}
