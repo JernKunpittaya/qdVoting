@@ -13,7 +13,25 @@ contract QuadraticVoting {
         mapping(address => uint256) negativeVotes; // user => weight
         uint256 totalPositiveWeight;
         uint256 totalNegativeWeight;
+        mapping(uint256 => Proposal) Proposals;
     }
+
+        struct Proposal {
+        address creator;
+        uint256 yesVotes;
+        uint256 noVotes;
+        string description;
+        address[] voters;
+        uint expirationTime;
+        mapping(address => Voter) voterInfo;
+    }
+
+        struct Voter {
+        bool hasVoted;
+        bool vote;
+        uint256 weight;
+    }
+
     uint256 public constant voteCost = 10_000_000_000; // wei
 
     mapping(uint256 => Item) public items; // itemId => id
@@ -66,6 +84,15 @@ contract QuadraticVoting {
     }
 
     function positiveVote(uint256 itemId, uint256 weight) public payable {
+        require(
+            !userHasVoted(_ProposalID, msg.sender),
+            "user already voted on this proposal"
+        );
+        require(
+            getProposalExpirationTime(_ProposalID) > now,
+            "for this proposal, the voting time expired"
+        );
+        
         Item storage item = items[itemId];
         require(msg.sender != item.owner); // owners cannot vote on their own items
 
@@ -87,6 +114,7 @@ contract QuadraticVoting {
         item.amount += msg.value; // reward creator of item for their contribution
 
         emit Voted(itemId, weight, true);
+        }
     }
 
     function negativeVote(uint256 itemId, uint256 weight) public payable {

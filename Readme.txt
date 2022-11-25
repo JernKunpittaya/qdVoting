@@ -21,7 +21,7 @@ Test backend
 
 Deploy backend to localhost
 -yarn hardhat node [take note of private keys of generated accounts]
--yarn hardhat deploy —network localhost
+-yarn hardhat deploy —-network localhost (make sure to use two dashes)
 
 
 Set up frontend
