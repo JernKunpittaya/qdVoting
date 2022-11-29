@@ -8,10 +8,19 @@
 }
 
 .forms {
+    /* Centered and border bottom */
     background: #f6f9fc;
     text-align: center;
     padding-bottom: 15px;
     border-bottom: 1px solid lightgrey;
+    margin-bottom: 10px;
+}
+
+.forms2 {
+    /* centered */
+    background: #f6f9fc;
+    text-align: center;
+    padding-bottom: 15px;
     margin-bottom: 10px;
 }
 

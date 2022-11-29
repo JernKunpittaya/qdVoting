@@ -19,13 +19,32 @@
 
 .title {
     text-align: center;
+    color: navy;
 }
 
-.forms {
+.forms { 
+    /* Centered, border bottom */
     background: #f6f9fc;
     text-align: center;
     padding-bottom: 15px;
     border-bottom: 1px solid lightgrey;
+    margin-bottom: 10px;
+}
+
+.forms2 {
+    /* Centered */
+    background: #f6f9fc;
+    text-align: center;
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+.forms3 {
+    /* Border bottom */
+    background: #f6f9fc;
+    padding-bottom: 15px;
+    border-bottom: 1px solid lightgrey;
+    margin-top: 10px;
     margin-bottom: 10px;
 }
 

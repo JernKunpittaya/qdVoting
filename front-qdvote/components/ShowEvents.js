@@ -1,4 +1,4 @@
-import { useMoralis, useWeb3Contract } from "react-moralis";
+// import { useMoralis, useWeb3Contract } from "react-moralis";
 import { abi, contractAddresses } from "../constants";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
@@ -12,18 +12,31 @@ import Rankedlist from "../components/Rankedlist";
 export default function ShowEvents() {
     const [Events, setEvents] = useState([]);
     const [title, setTitle] = useState("");
-    const [id, setId] = useState("");
-    const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
-    const [isClickedEvent, setIsClickedEvent] = useState(false);
+    // const [clickedCreateEventPage, setClickCreateEventPage] = useState(false);
+    
+    // 1. is Home, 2. is inside event to vote, 3. create an event
+    const [currentPage, setCurrentPage] = useState(1); 
 
     function clickBack() {
-        setIsClickedEvent(false);
+        setCurrentPage(1);
     };
 
     function clickRanklist() {
-        setIsClickedEvent(true);
+        setCurrentPage(2);
         console.log("click");
     };
+
+    function clickCreateEventPage(){
+        setCurrentPage(3);
+    }
+
+    // function clickCreateEventPage() {
+    //     setClickCreateEventPage(true);
+    // }
+
+    // function backToHomePage() {
+    //     setClickCreateEventPage(false);
+    // }
 
     // hard code some events with an event array to mock display
     // const event1 = {
@@ -44,27 +57,61 @@ export default function ShowEvents() {
     //     return arr;
     // }
 
-    function logit() {
-        console.log(1);
-    };
-
     useEffect(() => {
-
+        
     });
 
     function createEvent(e) {
         e.preventDefault();
         // ID is auto incrementing
         setEvents([...Events, { title: title, id: Events.length+1 }]);
+        alert("Event Successfully Created");
     };
 
     return (
         <div>
-        {!isClickedEvent && (
+        {currentPage == 1 && (
             <div>
-                <div className={styles.section}>
+                <div >
+                    <div className={styles.forms3}>
+                        <button 
+                        className={styles.button} 
+                        onClick={clickCreateEventPage}>
+                        Create An Event
+                        </button>
+                    </div>
+                    <div>
+                        <p>Welcome to our Decentralized Voting App!</p>
+                        <p> 
+                        Create an event above for others to vote on or
+                        select an existing event below to vote on!
+                        </p>
+                        <h2 className={styles.title}>Events:</h2>
+                        <div>
+                        {Events.map((each) => (
+                        <div className={styles.events} onClick={ clickRanklist }>Event {each.id}:
+                        <br></br>
+                        <br></br>
+                        {each.title}</div>
+                        ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+        {currentPage == 2 && (
+            <div>
+                <button onClick={clickBack}>Back</button>
+                {/* <CreateItem /> */}
+                <Rankedlist />
+            </div>
+        )}
+        {currentPage == 3 && (
+            <div>
+                <button onClick={clickBack}>Back</button>
+                <div>
                     <h2 className={styles.title}>Create an Event {"📝"}</h2>
-                    <form onSubmit={createEvent} className={styles.forms}>
+                    <form onSubmit={createEvent} className={styles.forms2}>
                         <input
                         type="text"
                         value={title}
@@ -85,23 +132,9 @@ export default function ShowEvents() {
                         <br /> */}
                         <input type="submit" className= {styles.button}/>
                     </form>
-                    {/* <button onClick={itemCount}>Count Item</button> */}
+                    <CreateItem />
                 </div>
-                <div>
-                    {Events.map((each) => (
-                    <div className={styles.events} onClick={ clickRanklist }>Event {each.id}:
-                    <br></br>
-                    <br></br>
-                    {each.title}</div>
-                    ))}
-                </div>
-            </div>
-        )}
-        {isClickedEvent && (
-            <div>
-                <button onClick={clickBack}>Back</button>
-                <CreateItem />
-                <Rankedlist />
+                {/* <Rankedlist /> */}
             </div>
         )}
         </div>

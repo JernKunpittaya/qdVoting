@@ -99,7 +99,7 @@ export default function Item({ item }) {
   }
   //
   return (
-    <div>
+    <div className={styles.section}>
       <h2 className={styles.title}>{item.title}</h2>
       <p>{item.description}</p>
       <p>{item.owner}</p>

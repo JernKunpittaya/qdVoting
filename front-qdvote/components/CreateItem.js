@@ -41,9 +41,8 @@ export default function CreateItem() {
     <div>
       {isWeb3Enabled && (
         <div className={styles.section}>
-          {/* <h2>Create Event</h2> */}
           <h2 className={styles.title}>Enter an item to vote on {"📝"}</h2>
-          <form onSubmit={createItem} className={styles.forms}>
+          <form onSubmit={createItem} className={styles.forms2}>
             <input
               type="text"
               value={title}
@@ -64,7 +63,6 @@ export default function CreateItem() {
             <br />
             <input type="submit" className= {styles.button}/>
           </form>
-          {/* <button onClick={itemCount}>Count Item</button> */}
         </div>
       )}
       {!isWeb3Enabled && (

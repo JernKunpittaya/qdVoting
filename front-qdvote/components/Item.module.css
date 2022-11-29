@@ -2,6 +2,10 @@
     color: rgb(88, 114, 153);
 }
 
+.section {
+    display: inline-block;
+}
+
 .clear_button {
     display: inline-flex;
     -webkit-box-align: center;
