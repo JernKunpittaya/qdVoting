@@ -12,6 +12,7 @@ import Rankedlist from "../components/Rankedlist";
 export default function ShowEvents() {
     const [Events, setEvents] = useState([]);
     const [title, setTitle] = useState("");
+    const [id, setId] = useState(0);
     // const [clickedCreateEventPage, setClickCreateEventPage] = useState(false);
     
     // 1. is Home, 2. is inside event to vote, 3. create an event
@@ -21,9 +22,11 @@ export default function ShowEvents() {
         setCurrentPage(1);
     };
 
-    function clickRanklist() {
+    function clickRanklist(e, each) {
+        e.preventDefault();
         setCurrentPage(2);
-        console.log("click");
+        setTitle(each.title);
+        setId(each.id);
     };
 
     function clickCreateEventPage(){
@@ -89,7 +92,8 @@ export default function ShowEvents() {
                         <h2 className={styles.title}>Events:</h2>
                         <div>
                         {Events.map((each) => (
-                        <div className={styles.events} onClick={ clickRanklist }>Event {each.id}:
+                        <div className={styles.events} onClick={ (e) => clickRanklist(e, each) }>
+                        Event {each.id}:
                         <br></br>
                         <br></br>
                         {each.title}</div>
@@ -102,7 +106,7 @@ export default function ShowEvents() {
         {currentPage == 2 && (
             <div>
                 <button onClick={clickBack}>Back</button>
-                {/* <CreateItem /> */}
+                <h2 className={styles.forms}>Event {id}: {title}</h2>
                 <Rankedlist />
             </div>
         )}

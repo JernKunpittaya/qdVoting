@@ -74,6 +74,7 @@ export default function Rankedlist() {
   return (
     <div>
       <section>
+        <p>Please vote for the option(s) that you like!</p>
         <h1 className={styles.title}>Ranked List</h1>
         {isWeb3Enabled && (
           <div className={styles.section}>
