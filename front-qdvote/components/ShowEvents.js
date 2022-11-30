@@ -13,9 +13,9 @@ export default function ShowEvents() {
     const [Events, setEvents] = useState([]);
     const [title, setTitle] = useState("");
     const [id, setId] = useState(0);
-    // const [clickedCreateEventPage, setClickCreateEventPage] = useState(false);
-    
-    // 1. is Home, 2. is inside event to vote, 3. create an event
+    const [fields, setFields] = useState([10]); // number of textfields for options
+    const [options, setOptions] = useState([{name:"", description:""}]) // options of the current Event
+    // 1. is Home, 2. is inside an event to vote (rankedlist), 3. create an event page
     const [currentPage, setCurrentPage] = useState(1); 
 
     function clickBack() {
@@ -27,19 +27,37 @@ export default function ShowEvents() {
         setCurrentPage(2);
         setTitle(each.title);
         setId(each.id);
+        setOptions(each.options);
     };
 
-    function clickCreateEventPage(){
+    function clickCreateEventPage() {
         setCurrentPage(3);
     }
 
-    // function clickCreateEventPage() {
-    //     setClickCreateEventPage(true);
-    // }
+    function addFormFields() {
+        setFields([...fields, 1]);
+    }
 
-    // function backToHomePage() {
-    //     setClickCreateEventPage(false);
-    // }
+    function removeFormFields(index) {
+        const temp_fields = [...fields];
+        temp_fields.splice(index, 1);
+        setFields(temp_fields);
+
+        const temp_options = [...options];
+        temp_options.splice(index, 1);
+        setOptions(temp_options);
+    }
+
+    function addOption(e, index) {
+        var temp = [];
+        if (index > options.length-1) {
+            temp = [...options, {name:"", description:""}]
+        } else {
+            temp = [...options];
+        }
+        temp[index][e.target.name] = e.target.value;
+        setOptions(temp);
+    }
 
     // hard code some events with an event array to mock display
     // const event1 = {
@@ -67,7 +85,8 @@ export default function ShowEvents() {
     function createEvent(e) {
         e.preventDefault();
         // ID is auto incrementing
-        setEvents([...Events, { title: title, id: Events.length+1 }]);
+        setEvents([...Events, { title: title, id: Events.length+1, options: options }]);
+        console.log(Events);
         alert("Event Successfully Created");
     };
 
@@ -107,7 +126,18 @@ export default function ShowEvents() {
             <div>
                 <button onClick={clickBack}>Back</button>
                 <h2 className={styles.forms}>Event {id}: {title}</h2>
-                <Rankedlist />
+                <p>Please vote for the option(s) that you like!</p> 
+                <div>
+                    {options.map((each) => (
+                        <div className={styles.optionsSection}>
+                            <h2 className={styles.optionsTitle}> {each.name} </h2>
+                            <p> {each.description} </p>
+                            <button className={styles.clear_button}>Up</button>
+                            <button className={styles.clear_button}>Down</button>
+                        </div>
+                    ))}
+                </div>
+                {/* <Rankedlist /> */}
             </div>
         )}
         {currentPage == 3 && (
@@ -118,27 +148,51 @@ export default function ShowEvents() {
                     <form onSubmit={createEvent} className={styles.forms2}>
                         <input
                         type="text"
-                        value={title}
+                        // value={title}
                         placeholder="Title"
                         required
                         onChange={(e) => setTitle(e.target.value)}
                         className = {styles.input}
                         />
                         <br />
-                        {/* <input
-                        type="text"
-                        value={id}
-                        placeholder="ID"
-                        required
-                        onChange={(e) => setId(e.target.value)}
-                        className = {styles.input}
-                        />
-                        <br /> */}
+                        <h3 className={styles.title}>& enter options to vote on:</h3>
+                        { fields.map((element, index) => (
+                            <div>
+                                <input
+                                type="text"
+                                name="name"
+                                placeholder= {"Option " + (index+1)}
+                                required
+                                onChange={(e) => addOption(e, index)}
+                                className = {styles.input}
+                                />
+                                <br />
+                                <textarea
+                                type = "text"
+                                name = "description"
+                                placeholder="Description"
+                                required
+                                onChange={(e) => addOption(e, index)}
+                                rows="2"
+                                cols="40"
+                                />
+                                <br />
+                                {  index ?
+                                    <div>
+                                        <button className = {styles.removeButton} onClick={() => removeFormFields(index) }>X</button>
+                                        <br />
+                                    </div>
+                                    : null
+                                }
+                                <br />
+                            </div>
+                        ))}
+                        <button className = {styles.addButton} onClick={ addFormFields }>Add</button>
+                        <br /><br />
                         <input type="submit" className= {styles.button}/>
                     </form>
-                    <CreateItem />
+                    {/* <CreateItem /> */}
                 </div>
-                {/* <Rankedlist /> */}
             </div>
         )}
         </div>
