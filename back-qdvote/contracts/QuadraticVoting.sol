@@ -1,54 +1,69 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.0 <0.9.0;
+pragma experimental ABIEncoderV2;
+//second line is necessary to store an event array of options structs 
 
 //test
-contract QuadraticVoting {
-    struct Item {
-        address payable owner;
-        uint256 amount;
+contract Poll {
+
+
+
+    struct Option {
+        //to clarify this is an option inside an event, TO DO: replace Item with Option in other files
+        //address payable owner; //this can also be the admin
+        //uint256 amount; //used to reward the creator of option, entire amount transferred to creator once it wins 
         bytes32 title;
-        // string imageHash; // IPFS cid
-        string description;
+        //string imageHash; // IPFS cid, TO DO: how to send this as argument 
+        //string description;
         mapping(address => uint256) positiveVotes; // user => weight
         mapping(address => uint256) negativeVotes; // user => weight
         uint256 totalPositiveWeight;
         uint256 totalNegativeWeight;
-        mapping(uint256 => Proposal) Proposals;
     }
 
-        struct Proposal {
-        address creator;
-        uint256 yesVotes;
-        uint256 noVotes;
-        string description;
-        address[] voters;
-        uint expirationTime;
-        mapping(address => Voter) voterInfo;
+    struct Voter {
+        uint256 currentCredits;
     }
 
-        struct Voter {
-        bool hasVoted;
-        bool vote;
-        uint256 weight;
+    //constructor for the whole contract creates a new event contract, not new option 
+     constructor(address _admin, string memory _title, address[] memory  _eligibles, string[] memory _options) {
+
+       //from Jern: parameters he used in Factory
+       factory= msg.sender;
+       admin = _admin;
+       title = _title;
+       eligibles = _eligibles;
+       options = _options;
+       //optionCount = new uint[](_options.length);
+       //isValid = true; //for expiration if we get to it
+
+        //TO DO: make an array of structs containing options 
+       function loop(
+       ) public returns(uint[] memory){
+        for(uint i=0; i<options.length; i++){
+            createOption();
+     }
+      return data;
     }
 
-    uint256 public constant voteCost = 10_000_000_000; // wei
+   }
 
-    mapping(uint256 => Item) public items; // itemId => id
-    uint256 public itemCount = 0; // also next itemId
-
-    event ItemCreated(uint256 itemId);
-    event Voted(uint256 itemId, uint256 weight, bool positive);
+       //public instance variables in original contract 
+       uint256 public constant voteCost = 10_000_000_000; // wei
+       mapping(uint256 => Option) public options; // optionId => id
+       uint256 public optionCount = 0; // also next optionId
+       event OptionCreated(uint256 optionId);
+       event Voted(uint256 optionId, uint256 weight, bool positive);
 
     function currentWeight(
-        uint256 itemId,
+        uint256 optionId,
         address addr,
         bool isPositive
     ) public view returns (uint256) {
         if (isPositive) {
-            return items[itemId].positiveVotes[addr];
+            return options[optionId].positiveVotes[addr];
         } else {
-            return items[itemId].negativeVotes[addr];
+            return options[optionId].negativeVotes[addr];
         }
     }
 
@@ -69,34 +84,27 @@ contract QuadraticVoting {
         }
     }
 
-    function createItem(
-        bytes32 title,
+    function createOption(
+        bytes32 title
         //string memory imageHash,
-        string memory description
+        //string memory description
     ) public {
-        uint256 itemId = itemCount++;
-        Item storage item = items[itemId];
-        item.owner = payable(msg.sender);
-        item.title = title;
-        //item.imageHash = imageHash;
-        item.description = description;
-        emit ItemCreated(itemId);
+        uint256 optionId = optionCount++;
+        Option storage option = options[optionId];
+        //option.owner = payable(msg.sender);
+        option.title = title;
+        //option.imageHash = imageHash;
+        //option.description = description;
+        emit OptionCreated(optionId);
     }
 
-    function positiveVote(uint256 itemId, uint256 weight) public payable {
-        require(
-            !userHasVoted(_ProposalID, msg.sender),
-            "user already voted on this proposal"
-        );
-        require(
-            getProposalExpirationTime(_ProposalID) > now,
-            "for this proposal, the voting time expired"
-        );
-        
-        Item storage item = items[itemId];
-        require(msg.sender != item.owner); // owners cannot vote on their own items
+    function positiveVote(uint256 optionId, uint256 weight) public payable {
 
-        uint256 currWeight = item.positiveVotes[msg.sender];
+        while(voter.currentCredits <100){
+        Option storage option = options[optionId];
+        require(msg.sender != option.owner); // owners cannot vote on their own options
+
+        uint256 currWeight = option.positiveVotes[msg.sender];
         if (currWeight == weight) {
             return; // no need to process further if vote has not changed
         }
@@ -104,24 +112,27 @@ contract QuadraticVoting {
         uint256 cost = calcCost(currWeight, weight);
         require(msg.value >= cost); // msg.value must be enough to cover the cost
 
-        item.positiveVotes[msg.sender] = weight;
-        item.totalPositiveWeight += weight - currWeight;
+        option.positiveVotes[msg.sender] = weight;
+        option.totalPositiveWeight += weight - currWeight;
 
         // weight cannot be both positive and negative simultaneously
-        item.totalNegativeWeight -= item.negativeVotes[msg.sender];
-        item.negativeVotes[msg.sender] = 0;
+        option.totalNegativeWeight -= option.negativeVotes[msg.sender];
+        option.negativeVotes[msg.sender] = 0;
 
-        item.amount += msg.value; // reward creator of item for their contribution
+        option.amount += msg.value; // reward creator of option for their contribution
 
-        emit Voted(itemId, weight, true);
+        emit Voted(optionId, weight, true);
+        voter.currentCredits += cost;
         }
     }
 
-    function negativeVote(uint256 itemId, uint256 weight) public payable {
-        Item storage item = items[itemId];
-        require(msg.sender != item.owner);
+    function negativeVote(uint256 optionId, uint256 weight) public payable {
 
-        uint256 currWeight = item.negativeVotes[msg.sender];
+        while(voter.currentCredits <100){
+        Option storage option = options[optionId];
+        require(msg.sender != option.owner);
+
+        uint256 currWeight = option.negativeVotes[msg.sender];
         if (currWeight == weight) {
             return; // no need to process further if vote has not changed
         }
@@ -129,26 +140,28 @@ contract QuadraticVoting {
         uint256 cost = calcCost(currWeight, weight);
         require(msg.value >= cost); // msg.value must be enough to cover the cost
 
-        item.negativeVotes[msg.sender] = weight;
-        item.totalNegativeWeight += weight - currWeight;
+        option.negativeVotes[msg.sender] = weight;
+        option.totalNegativeWeight += weight - currWeight;
 
         // weight cannot be both positive and negative simultaneously
-        item.totalPositiveWeight -= item.positiveVotes[msg.sender];
-        item.positiveVotes[msg.sender] = 0;
+        option.totalPositiveWeight -= option.positiveVotes[msg.sender];
+        option.positiveVotes[msg.sender] = 0;
 
-        // distribute voting cost to every item except for this one
-        uint256 reward = msg.value / (itemCount - 1);
-        for (uint256 i = 0; i < itemCount; i++) {
-            if (i != itemId) items[i].amount += reward;
+        // distribute voting cost to every option except for this one
+        uint256 reward = msg.value / (optionCount - 1);
+        for (uint256 i = 0; i < optionCount; i++) {
+            if (i != optionId) options[i].amount += reward;
         }
 
-        emit Voted(itemId, weight, false);
+        emit Voted(optionId, weight, false);
+        voter.currentCredits -= cost;
+        }
     }
 
-    function claim(uint256 itemId) public {
-        Item storage item = items[itemId];
-        require(msg.sender == item.owner);
-        item.owner.transfer(item.amount);
-        item.amount = 0;
-    }
+    // function claim(uint256 optionId) public {
+    //     Option storage option = options[optionId];
+    //     require(msg.sender == option.owner);
+    //     option.owner.transfer(option.amount);
+    //     option.amount = 0;
+    // }
 }
