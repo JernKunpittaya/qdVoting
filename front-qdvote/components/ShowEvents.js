@@ -132,8 +132,8 @@ export default function ShowEvents() {
                         <div className={styles.optionsSection}>
                             <h2 className={styles.optionsTitle}> {each.name} </h2>
                             <p> {each.description} </p>
-                            <button className={styles.clear_button}>Up</button>
-                            <button className={styles.clear_button}>Down</button>
+                            <button className={styles.clear_button}>{"👍"}</button>
+                            <button className={styles.clear_button}>{"👎"}</button>
                         </div>
                     ))}
                 </div>
