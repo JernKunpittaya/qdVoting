@@ -42,11 +42,25 @@ contract Factory {
         return PollArray[_pollIndex].getOpPositiveWeight(optionId);
     }
 
+    function getVoterOpPositiveWeight(
+        uint256 _pollIndex,
+        uint256 optionId
+    ) public view returns (uint256) {
+        return PollArray[_pollIndex].getVoterOpPositiveWeight(optionId, msg.sender);
+    }
+
     function getOpNegativeWeight(
         uint256 _pollIndex,
         uint256 optionId
     ) public view returns (uint256) {
         return PollArray[_pollIndex].getOpNegativeWeight(optionId);
+    }
+
+    function getVoterOpNegativeWeight(
+        uint256 _pollIndex,
+        uint256 optionId
+    ) public view returns (uint256) {
+        return PollArray[_pollIndex].getVoterOpNegativeWeight(optionId, msg.sender);
     }
 
     function getCredit(uint256 _pollIndex, address voter) public view returns (uint256) {

@@ -122,8 +122,16 @@ contract Poll {
         return options[optionId].totalPositiveWeight;
     }
 
+    function getVoterOpPositiveWeight(uint optionId, address voter) public view returns (uint256) {
+        return options[optionId].positiveVotes[voter];
+    }
+
     function getOpNegativeWeight(uint optionId) public view returns (uint256) {
         return options[optionId].totalNegativeWeight;
+    }
+
+    function getVoterOpNegativeWeight(uint optionId, address voter) public view returns (uint256) {
+        return options[optionId].negativeVotes[voter];
     }
 
     function getCredit(address voter) public view returns (uint256) {
