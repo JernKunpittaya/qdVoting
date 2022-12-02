@@ -23,6 +23,14 @@ contract Factory {
         PollArray[_pollIndex].negativeVote(msg.sender, _optionIndex, _num);
     }
 
+    function getNumEvents() public view returns (uint256) {
+        return PollArray.length;
+    }
+
+    function getTitle(uint256 _pollIndex) public view returns (string memory) {
+        return PollArray[_pollIndex].title();
+    }
+
     function getOpTitle(uint256 _pollIndex, uint256 optionId) public view returns (string memory) {
         return PollArray[_pollIndex].getOpTitle(optionId);
     }

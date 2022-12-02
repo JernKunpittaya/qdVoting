@@ -19,7 +19,7 @@ contract Poll {
 
     address factory;
     address admin;
-    string title;
+    string public title;
     address[] eligibles;
 
     event Voted(uint256 optionId, uint256 weight, bool isPositive);
