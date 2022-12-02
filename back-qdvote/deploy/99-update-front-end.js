@@ -12,24 +12,24 @@ module.exports = async function () {
     }
 }
 async function updateAbi() {
-    const quadraticVoting = await ethers.getContract("QuadraticVoting")
+    const factoryVoting = await ethers.getContract("Factory")
     fs.writeFileSync(
         FRONT_END_ABI_FILE,
-        quadraticVoting.interface.format(ethers.utils.FormatTypes.json)
+        factoryVoting.interface.format(ethers.utils.FormatTypes.json)
     )
 }
 
 async function updateContractAddresses() {
-    const quadraticVoting = await ethers.getContract("QuadraticVoting")
+    const factoryVoting = await ethers.getContract("Factory")
     const chainId = network.config.chainId.toString()
     const currentAddresses = JSON.parse(fs.readFileSync(FRONT_END_ADDRESSES_FILE, "utf8"))
     if (chainId in currentAddresses) {
-        if (!currentAddresses[chainId].includes(quadraticVoting.address)) {
-            currentAddresses[chainId].push(quadraticVoting.address)
+        if (!currentAddresses[chainId].includes(factoryVoting.address)) {
+            currentAddresses[chainId].push(factoryVoting.address)
         }
     }
     {
-        currentAddresses[chainId] = [quadraticVoting.address]
+        currentAddresses[chainId] = [factoryVoting.address]
     }
     fs.writeFileSync(FRONT_END_ADDRESSES_FILE, JSON.stringify(currentAddresses))
 }
