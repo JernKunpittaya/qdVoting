@@ -1,25 +1,30 @@
-// import { useMoralis, useWeb3Contract } from "react-moralis";
+import { useMoralis, useWeb3Contract } from "react-moralis";
 import { abi, contractAddresses } from "../constants";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { utils } from "web3";
 import styles from "./ShowEvents.module.css";
 import { renderMatches } from "react-router";
-import { clickRanklist } from "../pages/index.js";
-import CreateItem from "../components/CreateItem";
-import Rankedlist from "../components/Rankedlist";
+import CreatePoll from "../components/CreatePoll";
+// import CreateItem from "../components/CreateItem";
+// import Rankedlist from "../components/Rankedlist";
 
 export default function ShowEvents() {
     const [Events, setEvents] = useState([]);
     const [title, setTitle] = useState("");
     const [id, setId] = useState(0);
-    const [fields, setFields] = useState([10]); // number of textfields for options
+    const [fields, setFields] = useState([1]); // number of textfields for options
     const [options, setOptions] = useState([{name:"", description:""}]) // options of the current Event
     // 1. is Home, 2. is inside an event to vote (rankedlist), 3. create an event page
     const [currentPage, setCurrentPage] = useState(1); 
+    const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
+    const chainId = parseInt(chainIdHex);
+    const quadraticVotingAddress =
+    chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
     function clickBack() {
         setCurrentPage(1);
+        console.log(getNumEvents());
     };
 
     function clickRanklist(e, each) {
@@ -32,63 +37,77 @@ export default function ShowEvents() {
 
     function clickCreateEventPage() {
         setCurrentPage(3);
-    }
+    };
 
-    function addFormFields() {
-        setFields([...fields, 1]);
-    }
-
-    function removeFormFields(index) {
-        const temp_fields = [...fields];
-        temp_fields.splice(index, 1);
-        setFields(temp_fields);
-
-        const temp_options = [...options];
-        temp_options.splice(index, 1);
-        setOptions(temp_options);
-    }
-
-    function addOption(e, index) {
-        var temp = [];
-        if (index > options.length-1) {
-            temp = [...options, {name:"", description:""}]
-        } else {
-            temp = [...options];
-        }
-        temp[index][e.target.name] = e.target.value;
-        setOptions(temp);
-    }
-
-    // hard code some events with an event array to mock display
-    // const event1 = {
-    //     title: "Favorite Basketball Player",
-    //     id: 1
-    // };
-    // const event2 = {
-    //     title: "Where to vacation?",
-    //     id: 2
-    // };
-    // const event3 = {
-    //     title: "Best fruits",
-    //     id: 3
-    // };
-    // function pushToArray() {
-    //     const arr = [];
-    //     arr.push(event1, event2, event3);
-    //     return arr;
-    // }
-
-    useEffect(() => {
-        
+    // Get the number of events
+    const { runContractFunction: contractGetNumEvents } = useWeb3Contract({
+        abi: abi,
+        contractAddress: quadraticVotingAddress,
+        functionName: "getNumEvents",
+        params: {},
     });
 
-    function createEvent(e) {
-        e.preventDefault();
-        // ID is auto incrementing
-        setEvents([...Events, { title: title, id: Events.length+1, options: options }]);
-        console.log(Events);
-        alert("Event Successfully Created");
+    // get the title of an event by ID
+    const { runContractFunction: contractGetTitle } = useWeb3Contract({
+        abi: abi,
+        contractAddress: quadraticVotingAddress,
+        functionName: "getTitle",
+        params: {
+            _pollIndex: id
+    },
+    });
+
+    async function getNumEvents() {
+        return await contractGetNumEvents();
     };
+
+    useEffect(() => {
+        // const set = async () => {
+        //     const count = await contractGetNumEvents();
+        //     return count;
+        //   };
+        //   console.log(set());
+        // console.log(count);
+        // let eventArr = [];
+        // for (let i = 0; i < count; i++) {
+        //     const event = { title: contractGetTitle(i), id: i+1};
+        //     if (event) eventArr.push(event);
+        //   }
+        // setEvents(eventArr);
+    });
+
+    // function addFormFields() {
+    //     setFields([...fields, 1]);
+    // }
+
+    // function removeFormFields(index) {
+    //     const temp_fields = [...fields];
+    //     temp_fields.splice(index, 1);
+    //     setFields(temp_fields);
+
+    //     const temp_options = [...options];
+    //     temp_options.splice(index, 1);
+    //     setOptions(temp_options);
+    // }
+
+    // function addOption(e, index) {
+    //     var temp = [];
+    //     if (index > options.length-1) {
+    //         temp = [...options, {name:"", description:""}]
+    //     } else {
+    //         temp = [...options];
+    //     }
+    //     temp[index][e.target.name] = e.target.value;
+    //     setOptions(temp);
+    // }
+
+    // function createEvent(e) {
+    //     e.preventDefault();
+    //     // ID is auto incrementing
+    //     setEvents([...Events, { title: title, id: Events.length+1, options: options }]);
+    //     console.log(Events);
+    //     alert("Event Successfully Created");
+    // };
 
     return (
         <div>
@@ -143,7 +162,8 @@ export default function ShowEvents() {
         {currentPage == 3 && (
             <div>
                 <button onClick={clickBack}>Back</button>
-                <div>
+                <CreatePoll />
+                {/* <div>
                     <h2 className={styles.title}>Create an Event {"📝"}</h2>
                     <form onSubmit={createEvent} className={styles.forms2}>
                         <input
@@ -190,9 +210,8 @@ export default function ShowEvents() {
                         <button className = {styles.addButton} onClick={ addFormFields }>Add</button>
                         <br /><br />
                         <input type="submit" className= {styles.button}/>
-                    </form>
-                    {/* <CreateItem /> */}
-                </div>
+                    </form> */}
+                {/* </div> */}
             </div>
         )}
         </div>
