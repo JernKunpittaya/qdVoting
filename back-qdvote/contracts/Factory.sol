@@ -27,6 +27,10 @@ contract Factory {
         return PollArray.length;
     }
 
+    function getNumOptions(uint256 _pollIndex) public view returns (uint256) {
+        return PollArray[_pollIndex].optionCount();
+    }
+
     function getTitle(uint256 _pollIndex) public view returns (string memory) {
         return PollArray[_pollIndex].title();
     }

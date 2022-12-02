@@ -11,7 +11,7 @@ contract Poll {
         uint256 totalNegativeWeight;
     }
     mapping(uint256 => Option) public options; //
-    uint256 optionCount;
+    uint256 public optionCount;
 
     uint256 public creditLimit = 100;
     uint256 public constant voteCost = 1; // base = 1 credit limit
