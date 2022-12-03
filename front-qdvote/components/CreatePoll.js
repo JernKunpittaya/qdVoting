@@ -7,9 +7,9 @@ import styles from "./CreatePoll.module.css";
 
 export default function CreatePoll() {
     const [title, setTitle] = useState("");
-    const [id, setId] = useState(0);
+    // const [id, setId] = useState(0);
     const [fields, setFields] = useState([1]); // number of textfields for options
-    const [eligibles, setEligibles] = useState([]); // addresses that are eligible to vote
+    const [eligibles, setEligibles] = useState(["0x70997970C51812dc3A010C7d01b50e0d17dc79C8"]); // addresses that are eligible to vote
     const [options, setOptions] = useState([{name:"", description:""}]) // options of the current Event
     const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
     const chainId = parseInt(chainIdHex);
@@ -72,7 +72,7 @@ export default function CreatePoll() {
         for (let i = 0; i < options.length; i++) {
             optionNames.push(options[i]["name"])
         }
-        await contract.createPoll(title, ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8"], optionNames);
+        await contract.createPoll(title, eligibles, optionNames);
         alert("Event Successfully Created");
     };
 
@@ -125,7 +125,6 @@ export default function CreatePoll() {
                 <br /><br />
                 <input type="submit" className= {styles.button}/>
             </form>
-            {/* <CreateItem /> */}
         </div>
     );
     }

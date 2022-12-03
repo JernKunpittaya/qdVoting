@@ -13,7 +13,6 @@ export default function ShowEvents() {
     const [Events, setEvents] = useState([]);
     const [title, setTitle] = useState("");
     const [id, setId] = useState(0);
-    // const [fields, setFields] = useState([1]); // number of textfields for options
     const [options, setOptions] = useState([{name:"", description:""}]) // options of the current Event
     // 1. is Home, 2. is inside an event to vote (rankedlist), 3. create an event page
     const [currentPage, setCurrentPage] = useState(1); 
@@ -34,13 +33,13 @@ export default function ShowEvents() {
     };
     start();
 
-    // Get the number of events
-    const { runContractFunction: contractGetNumEvents } = useWeb3Contract({
-        abi: abi,
-        contractAddress: quadraticVotingAddress,
-        functionName: "getNumEvents",
-        params: {},
-    });
+    // // Get the number of events
+    // const { runContractFunction: contractGetNumEvents } = useWeb3Contract({
+    //     abi: abi,
+    //     contractAddress: quadraticVotingAddress,
+    //     functionName: "getNumEvents",
+    //     params: {},
+    // });
 
     function clickBack() {
         setCurrentPage(1);
@@ -58,18 +57,8 @@ export default function ShowEvents() {
         setCurrentPage(3);
     };
 
-    // // get the title of an event by ID
-    // const { runContractFunction: contractGetTitle } = useWeb3Contract({
-    //     abi: abi,
-    //     contractAddress: quadraticVotingAddress,
-    //     functionName: "getTitle",
-    //     params: {
-    //         _pollIndex: id
-    // },
-    // });
-
     async function getNumEvents() {
-        return await contractGetNumEvents();
+        return await contract.getNumEvents();
     };
 
     // called by useEffect() to setEvents to all of the events in the contract
@@ -190,13 +179,18 @@ export default function ShowEvents() {
                         </p>
                         <h2 className={styles.title}>Events:</h2>
                         <div>
-                        {Events.map((each) => (
-                        <div className={styles.events} onClick={ (e) => clickRanklist(e, each) }>
-                        Event {each.id}:
-                        <br></br>
-                        <br></br>
-                        {each.title}</div>
-                        ))}
+                            {Events.map((each) => (
+                                <div 
+                                className={styles.events} 
+                                onClick={ (e) => clickRanklist(e, each) }
+                                key={each.id}
+                                >
+                                    Event {each.id}:
+                                    <br></br>
+                                    <br></br>
+                                    {each.title}
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -208,8 +202,8 @@ export default function ShowEvents() {
                 <h2 className={styles.forms}>Event {id}: {title}</h2>
                 <p>Please vote for the option(s) that you like!</p> 
                 <div>
-                    {options.map((each) => (
-                        <div className={styles.optionsSection}>
+                    {options.map((each, index) => (
+                        <div className={styles.optionsSection} key={index}>
                             <h2 className={styles.optionsTitle}> {each.name} </h2>
                             <p> {each.description} </p>
                             <button className={styles.clear_button}>{"👍"}</button>
