@@ -13,18 +13,37 @@ export default function ShowEvents() {
     const [Events, setEvents] = useState([]);
     const [title, setTitle] = useState("");
     const [id, setId] = useState(0);
-    const [fields, setFields] = useState([1]); // number of textfields for options
+    // const [fields, setFields] = useState([1]); // number of textfields for options
     const [options, setOptions] = useState([{name:"", description:""}]) // options of the current Event
     // 1. is Home, 2. is inside an event to vote (rankedlist), 3. create an event page
     const [currentPage, setCurrentPage] = useState(1); 
     const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
     const chainId = parseInt(chainIdHex);
     const quadraticVotingAddress =
-    chainId in contractAddresses ? contractAddresses[chainId][0] : null;
+        chainId in contractAddresses ? contractAddresses[chainId][0] : null;
+    var contract;
+
+    async function start() {
+        if (isWeb3Enabled) {
+          contract = new ethers.Contract(
+            quadraticVotingAddress,
+            abi,
+            web3.getSigner()
+          );
+        }
+    };
+    start();
+
+    // Get the number of events
+    const { runContractFunction: contractGetNumEvents } = useWeb3Contract({
+        abi: abi,
+        contractAddress: quadraticVotingAddress,
+        functionName: "getNumEvents",
+        params: {},
+    });
 
     function clickBack() {
         setCurrentPage(1);
-        console.log(getNumEvents());
     };
 
     function clickRanklist(e, each) {
@@ -39,42 +58,84 @@ export default function ShowEvents() {
         setCurrentPage(3);
     };
 
-    // Get the number of events
-    const { runContractFunction: contractGetNumEvents } = useWeb3Contract({
-        abi: abi,
-        contractAddress: quadraticVotingAddress,
-        functionName: "getNumEvents",
-        params: {},
-    });
-
-    // get the title of an event by ID
-    const { runContractFunction: contractGetTitle } = useWeb3Contract({
-        abi: abi,
-        contractAddress: quadraticVotingAddress,
-        functionName: "getTitle",
-        params: {
-            _pollIndex: id
-    },
-    });
+    // // get the title of an event by ID
+    // const { runContractFunction: contractGetTitle } = useWeb3Contract({
+    //     abi: abi,
+    //     contractAddress: quadraticVotingAddress,
+    //     functionName: "getTitle",
+    //     params: {
+    //         _pollIndex: id
+    // },
+    // });
 
     async function getNumEvents() {
         return await contractGetNumEvents();
     };
 
+    // called by useEffect() to setEvents to all of the events in the contract
+    async function getAllEvents() {
+        const count = await getNumEvents();
+        let eventArr = [];
+    
+        for (let i = 0; i < count; i++) {
+          const _event = await getOneEvent(i);
+          _event.id = i+1;
+          if (_event) eventArr.push(_event);
+        }
+        return eventArr;
+    };
+
+    // called by getAllEvents() to get an single event by Id
+    async function getOneEvent(eventID) {
+        const eventTitle = await contract.getTitle(eventID);
+        const eventOptions = await getAllOptions(eventID);
+        // const eventOptions = await contract.getOpTitle(eventID, 0);
+        var optionArr = [];
+        for (let i = 0; i < eventOptions.length; i++) {
+            optionArr.push({name: eventOptions[i], description: "N/A"})
+        }
+
+        if (eventTitle) {
+          return {
+            title: eventTitle,
+            id: 0, // placeholder, gets changed in the next function stack call
+            options: optionArr
+          };
+        } else {
+          return null;
+        }
+    };
+
+    // called by getOneEvent() to get all the options of an event,
+    async function getAllOptions(eventID) {
+        const count = await contract.getNumOptions(eventID);
+        var optionArr = [];
+        for (let i = 0; i < count; i++) {
+            const _option = await getOneOption(eventID, i);
+            if (_option) optionArr.push(_option);
+          }
+          return optionArr;
+    };
+
+    // called by getAllOptions() to get one option
+    async function getOneOption(eventID, optionID) {
+        const optionTitle = await contract.getOpTitle(eventID, optionID);
+
+        if (optionTitle) {
+            return optionTitle;
+          } else {
+            return null;
+          }
+    };
+
     useEffect(() => {
-        // const set = async () => {
-        //     const count = await contractGetNumEvents();
-        //     return count;
-        //   };
-        //   console.log(set());
-        // console.log(count);
-        // let eventArr = [];
-        // for (let i = 0; i < count; i++) {
-        //     const event = { title: contractGetTitle(i), id: i+1};
-        //     if (event) eventArr.push(event);
-        //   }
-        // setEvents(eventArr);
-    });
+        const set = async () => {
+            await getAllEvents().then((result) => {
+              setEvents(result);
+            });
+          };
+        set();
+    }, []);
 
     // function addFormFields() {
     //     setFields([...fields, 1]);

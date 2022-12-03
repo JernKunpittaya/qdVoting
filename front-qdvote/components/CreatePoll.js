@@ -15,22 +15,28 @@ export default function CreatePoll() {
     const chainId = parseInt(chainIdHex);
     const quadraticVotingAddress =
     chainId in contractAddresses ? contractAddresses[chainId][0] : null;
+    var contract;
+    async function start() {
+        if (isWeb3Enabled) {
+          contract = new ethers.Contract(
+            quadraticVotingAddress,
+            abi,
+            web3.getSigner()
+          );
+        }
+    };
+    start();
 
-    const { runContractFunction: contractCreatePoll } = useWeb3Contract({
-        abi: abi,
-        contractAddress: quadraticVotingAddress,
-        functionName: "createPoll",
-        params: {
-            _title: "numbers",
-            _eligibles: [0x70997970C51812dc3A010C7d01b50e0d17dc79C8],
-            _opTitle: ["one", "two"],
-        },
-    });
-
-    // async function createPoll(e) {
-    //     e.preventDefault();
-    //     await contractCreatePoll();
-    // }
+    // const { runContractFunction: contractCreatePoll } = useWeb3Contract({
+    //     abi: abi,
+    //     contractAddress: quadraticVotingAddress,
+    //     functionName: "createPoll",
+    //     params: {
+    //         _title: title,
+    //         _eligibles: ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8"],
+    //         _opTitle: optionTitles,
+    //     },
+    // });
 
     function addFormFields() {
         setFields([...fields, 1]);
@@ -59,9 +65,14 @@ export default function CreatePoll() {
 
     async function createPoll(e) {
         e.preventDefault();
-        // ID is auto incrementing
         // setEvents([...Events, { title: title, id: Events.length+1, options: options }]);
-        await contractCreatePoll();
+        console.log(options);
+        // create an array of only the option name in the voting
+        var optionNames = []
+        for (let i = 0; i < options.length; i++) {
+            optionNames.push(options[i]["name"])
+        }
+        await contract.createPoll(title, ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8"], optionNames);
         alert("Event Successfully Created");
     };
 
