@@ -6,6 +6,7 @@ import { utils } from "web3";
 import styles from "./ShowEvents.module.css";
 import { renderMatches } from "react-router";
 import CreatePoll from "../components/CreatePoll";
+import Option from "../components/Option";
 // import CreateItem from "../components/CreateItem";
 // import Rankedlist from "../components/Rankedlist";
 
@@ -204,11 +205,14 @@ export default function ShowEvents() {
                 <div>
                     {options.map((each, index) => (
                         <div className={styles.optionsSection} key={index}>
-                            <h2 className={styles.optionsTitle}> {each.name} </h2>
-                            <p> {each.description} </p>
-                            <button className={styles.clear_button}>{"👍"}</button>
-                            <button className={styles.clear_button}>{"👎"}</button>
+                            <Option key={index} props={{option: each, optionId: index, eventId: id}}/>
                         </div>
+                        // <div className={styles.optionsSection} key={index}>
+                        //     <h2 className={styles.optionsTitle}> {each.name} </h2>
+                        //     <p> {each.description} </p>
+                        //     <button className={styles.clear_button}>{"👍"}</button>
+                        //     <button className={styles.clear_button}>{"👎"}</button>
+                        // </div>
                     ))}
                 </div>
                 {/* <Rankedlist /> */}
