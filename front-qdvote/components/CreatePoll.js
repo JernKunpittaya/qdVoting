@@ -9,7 +9,8 @@ export default function CreatePoll() {
     const [title, setTitle] = useState("");
     // const [id, setId] = useState(0);
     const [fields, setFields] = useState([1]); // number of textfields for options
-    const [eligibles, setEligibles] = useState(["0x70997970C51812dc3A010C7d01b50e0d17dc79C8"]); // addresses that are eligible to vote
+    const [eligibleFields, setEligibleFields] = useState([1]); // number of textfields for eligible voters
+    const [eligibles, setEligibles] = useState([""]); // addresses that are eligible to vote
     const [options, setOptions] = useState([{name:"", description:""}]) // options of the current Event
     const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
     const chainId = parseInt(chainIdHex);
@@ -63,10 +64,36 @@ export default function CreatePoll() {
         setOptions(temp);
     }
 
+    function addEligibleFormFields() {
+        setEligibleFields([...eligibleFields, 1]);
+    }
+
+    function removeEligibleFormFields(index) {
+        const temp_fields = [...eligibleFields];
+        temp_fields.splice(index, 1);
+        setEligibleFields(temp_fields);
+
+        const temp_eligibles = [...eligibles];
+        temp_eligibles.splice(index, 1);
+        setEligibles(temp_eligibles);
+    }
+
+    function addEligibles(e, index) {
+        var temp = [];
+        if (index > eligibles.length-1) {
+            temp = [...eligibles, e.target.value]
+        } else {
+            temp = [...eligibles];
+        }
+        temp[index] = e.target.value;
+        setEligibles(temp);
+    }
+
     async function createPoll(e) {
         e.preventDefault();
         // setEvents([...Events, { title: title, id: Events.length+1, options: options }]);
         console.log(options);
+        console.log(eligibles);
         // create an array of only the option name in the voting
         var optionNames = []
         for (let i = 0; i < options.length; i++) {
@@ -122,6 +149,31 @@ export default function CreatePoll() {
                     </div>
                 ))}
                 <button className = {styles.addButton} onClick={ addFormFields }>Add</button>
+                <br />
+                <h3 className={styles.title}>& enter eligible voters (separated by commas):</h3>
+                { eligibleFields.map((element, index) => (
+                    <div>
+                        <textarea
+                        type="text"
+                        // value={title}
+                        placeholder= {"Eligible Voter #" + (index+1)}
+                        required
+                        onChange={(e) => addEligibles(e, index)}
+                        className = {styles.input}
+                        rows="1"
+                        cols="40"
+                        />
+                        <br />
+                        {  index ?
+                            <div>
+                                <button className = {styles.removeButton} onClick={() => removeEligibleFormFields(index) }>X</button>
+                                <br /><br />
+                            </div>
+                            : null
+                        }
+                    </div>
+                ))}
+                <button className = {styles.addButton} onClick={ addEligibleFormFields }>Add</button>
                 <br /><br />
                 <input type="submit" className= {styles.button}/>
             </form>
