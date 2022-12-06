@@ -14,7 +14,8 @@ export default function ShowEvents() {
     const [Events, setEvents] = useState([]);
     const [title, setTitle] = useState("");
     const [id, setId] = useState(0);
-    const [options, setOptions] = useState([{name:"", description:""}]) // options of the current Event
+    const [options, setOptions] = useState([{name:"", description:""}]); // options of the current Event
+    const [credits, setCredits] = useState(0);
     // 1. is Home, 2. is inside an event to vote (rankedlist), 3. create an event page
     const [currentPage, setCurrentPage] = useState(1); 
     const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
@@ -118,6 +119,11 @@ export default function ShowEvents() {
           }
     };
 
+    async function getRemainingCredits(eventID, voterID) {
+        const credits = await contract.getCredit(eventID, voterID);
+        setCredits(credits.toNumber());
+    }
+
     useEffect(() => {
         const set = async () => {
             await getAllEvents().then((result) => {
@@ -126,6 +132,13 @@ export default function ShowEvents() {
           };
         set();
     }, []);
+
+    useEffect(() => {
+        const cred = async () => {
+            await getRemainingCredits(id, account);
+          };
+        cred();
+    });
 
     // function addFormFields() {
     //     setFields([...fields, 1]);
@@ -200,6 +213,7 @@ export default function ShowEvents() {
         {currentPage == 2 && (
             <div>
                 <button onClick={clickBack}>Back</button>
+                <p>Credits Remaining: {credits}</p>
                 <h2 className={styles.forms}>Event {id}: {title}</h2>
                 <p>Please vote for the option(s) that you like!</p> 
                 <div>
@@ -215,7 +229,6 @@ export default function ShowEvents() {
                         // </div>
                     ))}
                 </div>
-                {/* <Rankedlist /> */}
             </div>
         )}
         {currentPage == 3 && (

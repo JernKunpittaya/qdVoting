@@ -119,7 +119,7 @@ export default function Option({ props }) {
       {weight !== startWeight && (
         <div>
             <p>Weight: {weight}</p>
-            <p>Cost: {weight **2 * 10} gwei</p>
+            <p>Cost: {weight **2 } Credits</p>
             <button onClick={submitVote} className={styles.solid_button}>Submit Vote</button>
         </div>
        )}
