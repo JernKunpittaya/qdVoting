@@ -23,10 +23,12 @@ contract Factory {
     }
 
     function positiveVote(uint256 _pollIndex, uint256 _optionIndex, uint256 _num) public {
+        require(isActive[_pollIndex] == true, "Time's up for this poll already!");
         PollArray[_pollIndex].positiveVote(msg.sender, _optionIndex, _num);
     }
 
     function negativeVote(uint256 _pollIndex, uint256 _optionIndex, uint256 _num) public {
+        require(isActive[_pollIndex] == true, "Time's up for this poll already!");
         PollArray[_pollIndex].negativeVote(msg.sender, _optionIndex, _num);
     }
 
