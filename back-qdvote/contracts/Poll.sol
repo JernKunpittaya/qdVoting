@@ -10,6 +10,8 @@ contract Poll {
         uint256 totalPositiveWeight;
         uint256 totalNegativeWeight;
     }
+    uint256 public deployTime;
+    uint256 validMinutes;
     mapping(uint256 => Option) public options; //
     uint256 public optionCount;
 
@@ -18,7 +20,7 @@ contract Poll {
     mapping(address => uint256) public creditVoters;
 
     address factory;
-    address admin;
+    address public admin;
     string public title;
     address[] eligibles;
 
@@ -28,13 +30,16 @@ contract Poll {
         address _admin,
         string memory _title,
         address[] memory _eligibles,
-        string[] memory _opTitle
+        string[] memory _opTitle,
+        uint256 _validMinutes
     ) {
         factory = msg.sender;
         admin = _admin;
         title = _title;
         eligibles = _eligibles;
         optionCount = _opTitle.length;
+        deployTime = block.timestamp;
+        validMinutes = _validMinutes * 60;
         for (uint i = 0; i < _eligibles.length; i++) {
             creditVoters[_eligibles[i]] = creditLimit;
         }
@@ -122,16 +127,8 @@ contract Poll {
         return options[optionId].totalPositiveWeight;
     }
 
-    function getVoterOpPositiveWeight(uint optionId, address voter) public view returns (uint256) {
-        return options[optionId].positiveVotes[voter];
-    }
-
     function getOpNegativeWeight(uint optionId) public view returns (uint256) {
         return options[optionId].totalNegativeWeight;
-    }
-
-    function getVoterOpNegativeWeight(uint optionId, address voter) public view returns (uint256) {
-        return options[optionId].negativeVotes[voter];
     }
 
     function getCredit(address voter) public view returns (uint256) {
@@ -140,6 +137,7 @@ contract Poll {
 
     function getResult() public view returns (uint256) {
         // Need condition to be called only when time expired
+        require(block.timestamp > deployTime + validMinutes, "Poll time not expired yet!");
         uint winner = 0;
         uint winnerAdjustedWeight = 0;
         for (uint i = 0; i < optionCount; i++) {
@@ -155,6 +153,14 @@ contract Poll {
             }
         }
         return winner;
+    }
+
+    function getVoterOpPositiveWeight(uint optionId, address voter) public view returns (uint256) {
+        return options[optionId].positiveVotes[voter];
+    }
+
+    function getVoterOpNegativeWeight(uint optionId, address voter) public view returns (uint256) {
+        return options[optionId].negativeVotes[voter];
     }
 
     function currentWeight(

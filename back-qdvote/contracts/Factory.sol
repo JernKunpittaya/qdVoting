@@ -4,15 +4,22 @@ import "./Poll.sol";
 
 contract Factory {
     Poll[] public PollArray;
+    bool[] public isActive;
+    uint256[] public results;
     event PollCreated(string _title);
+    //dummy for creating tx to keep block in localhost moving wen getResult.
+    uint256 dummy = 0;
 
     function createPoll(
         string memory _title,
         address[] memory _eligibles,
-        string[] memory _opTitle
+        string[] memory _opTitle,
+        uint256 _validMinutes
     ) public {
-        PollArray.push(new Poll(msg.sender, _title, _eligibles, _opTitle));
+        PollArray.push(new Poll(msg.sender, _title, _eligibles, _opTitle, _validMinutes));
         emit PollCreated(_title);
+        isActive.push(true);
+        results.push(0);
     }
 
     function positiveVote(uint256 _pollIndex, uint256 _optionIndex, uint256 _num) public {
@@ -23,12 +30,16 @@ contract Factory {
         PollArray[_pollIndex].negativeVote(msg.sender, _optionIndex, _num);
     }
 
-    function getNumEvents() public view returns (uint256) {
-        return PollArray.length;
+    function publishResult(uint _pollIndex) public {
+        // To make sure a transaction happens to append the block, hence its time in
+        // our hardhat localhost.
+        dummy += 1;
+        results[_pollIndex] = PollArray[_pollIndex].getResult();
+        isActive[_pollIndex] = false;
     }
 
-    function getNumOptions(uint256 _pollIndex) public view returns (uint256) {
-        return PollArray[_pollIndex].optionCount();
+    function getNumEvents() public view returns (uint256) {
+        return PollArray.length;
     }
 
     function getTitle(uint256 _pollIndex) public view returns (string memory) {
@@ -73,5 +84,17 @@ contract Factory {
 
     function getresult(uint256 _pollIndex) public view returns (uint256) {
         return PollArray[_pollIndex].getResult();
+    }
+
+    function getdeployTime(uint _pollIndex) public view returns (uint256) {
+        return PollArray[_pollIndex].deployTime();
+    }
+
+    function getcurrentTime() public view returns (uint256) {
+        return block.timestamp;
+    }
+
+    function getNumOptions(uint256 _pollIndex) public view returns (uint256) {
+        return PollArray[_pollIndex].optionCount();
     }
 }
