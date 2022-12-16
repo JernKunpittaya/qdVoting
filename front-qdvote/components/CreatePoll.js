@@ -12,6 +12,7 @@ export default function CreatePoll() {
     const [eligibleFields, setEligibleFields] = useState([1]); // number of textfields for eligible voters
     const [eligibles, setEligibles] = useState([""]); // addresses that are eligible to vote
     const [options, setOptions] = useState([{name:"", description:""}]) // options of the current Event
+    const [validMins, setValidMins] = useState(0);
     const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
     const chainId = parseInt(chainIdHex);
     const quadraticVotingAddress =
@@ -94,12 +95,13 @@ export default function CreatePoll() {
         // setEvents([...Events, { title: title, id: Events.length+1, options: options }]);
         console.log(options);
         console.log(eligibles);
+        console.log(validMins);
         // create an array of only the option name in the voting
         var optionNames = []
         for (let i = 0; i < options.length; i++) {
             optionNames.push(options[i]["name"])
         }
-        await contract.createPoll(title, eligibles, optionNames);
+        await contract.createPoll(title, eligibles, optionNames, validMins);
         alert("Event Successfully Created");
     };
 
@@ -174,6 +176,15 @@ export default function CreatePoll() {
                     </div>
                 ))}
                 <button className = {styles.addButton} onClick={ addEligibleFormFields }>Add</button>
+                <br />
+                <h3 className={styles.title}>& enter how long poll will last (in minutes):</h3>
+                <input
+                type="text"
+                placeholder="Minutes Until Expire"
+                required
+                onChange={(e) => setValidMins(e.target.value)}
+                className = {styles.input}
+                />
                 <br /><br />
                 <input type="submit" className= {styles.button}/>
             </form>

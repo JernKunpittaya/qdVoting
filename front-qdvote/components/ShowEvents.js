@@ -221,12 +221,6 @@ export default function ShowEvents() {
                         <div className={styles.optionsSection} key={index}>
                             <Option key={index} props={{option: each, optionId: index, eventId: id}}/>
                         </div>
-                        // <div className={styles.optionsSection} key={index}>
-                        //     <h2 className={styles.optionsTitle}> {each.name} </h2>
-                        //     <p> {each.description} </p>
-                        //     <button className={styles.clear_button}>{"👍"}</button>
-                        //     <button className={styles.clear_button}>{"👎"}</button>
-                        // </div>
                     ))}
                 </div>
             </div>
@@ -235,59 +229,9 @@ export default function ShowEvents() {
             <div>
                 <button onClick={clickBack}>Back</button>
                 <CreatePoll />
-                {/* <div>
-                    <h2 className={styles.title}>Create an Event {"📝"}</h2>
-                    <form onSubmit={createEvent} className={styles.forms2}>
-                        <input
-                        type="text"
-                        // value={title}
-                        placeholder="Title"
-                        required
-                        onChange={(e) => setTitle(e.target.value)}
-                        className = {styles.input}
-                        />
-                        <br />
-                        <h3 className={styles.title}>& enter options to vote on:</h3>
-                        { fields.map((element, index) => (
-                            <div>
-                                <input
-                                type="text"
-                                name="name"
-                                placeholder= {"Option " + (index+1)}
-                                required
-                                onChange={(e) => addOption(e, index)}
-                                className = {styles.input}
-                                />
-                                <br />
-                                <textarea
-                                type = "text"
-                                name = "description"
-                                placeholder="Description"
-                                required
-                                onChange={(e) => addOption(e, index)}
-                                rows="2"
-                                cols="40"
-                                />
-                                <br />
-                                {  index ?
-                                    <div>
-                                        <button className = {styles.removeButton} onClick={() => removeFormFields(index) }>X</button>
-                                        <br />
-                                    </div>
-                                    : null
-                                }
-                                <br />
-                            </div>
-                        ))}
-                        <button className = {styles.addButton} onClick={ addFormFields }>Add</button>
-                        <br /><br />
-                        <input type="submit" className= {styles.button}/>
-                    </form> */}
-                {/* </div> */}
             </div>
         )}
         </div>
-
       );
 
 }
