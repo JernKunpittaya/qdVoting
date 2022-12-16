@@ -96,6 +96,10 @@ contract Factory {
         return block.timestamp;
     }
 
+    function getvalidSeconds(uint _pollIndex) public view returns (uint256) {
+        return PollArray[_pollIndex].validSeconds();
+    }
+
     function getNumOptions(uint256 _pollIndex) public view returns (uint256) {
         return PollArray[_pollIndex].optionCount();
     }

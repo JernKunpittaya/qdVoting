@@ -11,7 +11,7 @@ contract Poll {
         uint256 totalNegativeWeight;
     }
     uint256 public deployTime;
-    uint256 validMinutes;
+    uint256 public validSeconds;
     mapping(uint256 => Option) public options; //
     uint256 public optionCount;
 
@@ -39,7 +39,7 @@ contract Poll {
         eligibles = _eligibles;
         optionCount = _opTitle.length;
         deployTime = block.timestamp;
-        validMinutes = _validMinutes * 60;
+        validSeconds = _validMinutes * 60;
         for (uint i = 0; i < _eligibles.length; i++) {
             creditVoters[_eligibles[i]] = creditLimit;
         }
@@ -137,7 +137,7 @@ contract Poll {
 
     function getResult() public view returns (uint256) {
         // Need condition to be called only when time expired
-        require(block.timestamp > deployTime + validMinutes, "Poll time not expired yet!");
+        require(block.timestamp > deployTime + validSeconds, "Poll time not expired yet!");
         uint winner = 0;
         uint winnerAdjustedWeight = 0;
         for (uint i = 0; i < optionCount; i++) {
