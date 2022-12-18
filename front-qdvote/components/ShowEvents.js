@@ -19,7 +19,6 @@ export default function ShowEvents() {
     const [deployTime, setDeployTime] = useState(0); // deploy time of a contract
     const [currentTime, setCurrentTime] = useState(new Date()); // current time in react
     const [validTime, setValidTime] = useState(0); // valid time until expire of a contract
-    const [result, setResult] = useState(0); // result of a poll 
     // 1. is Home, 2. is inside an event to vote (rankedlist), 3. create an event page
     const [currentPage, setCurrentPage] = useState(1); 
     const d = new Date();
@@ -76,7 +75,8 @@ export default function ShowEvents() {
         let eventArr = [];
         for (let i = 0; i < count; i++) {
           const _event = await getOneEvent(i);
-          _event.id = i+1;
+          // _event.id = i+1; // change this so first event is 0
+          _event.id = i;
           if (_event) eventArr.push(_event);
         }
         return eventArr;
@@ -88,6 +88,7 @@ export default function ShowEvents() {
         const eventOptions = await getAllOptions(eventID);
         const eventSeconds = await contract.getvalidSeconds(eventID);
         const eventDeploy = await contract.getdeployTime(eventID);
+        // const eventActive = await contract
         // const eventOptions = await contract.getOpTitle(eventID, 0);
         var optionArr = [];
         for (let i = 0; i < eventOptions.length; i++) {
@@ -101,7 +102,7 @@ export default function ShowEvents() {
             options: optionArr,
             deployTime: eventDeploy.toNumber(),
             validSeconds: eventSeconds.toNumber(),
-            isActive: 1
+            isActive: 1 // placeholder, all events start out as active
           };
         } else {
           return null;
@@ -262,5 +263,4 @@ export default function ShowEvents() {
         )}
         </div>
       );
-
 }
