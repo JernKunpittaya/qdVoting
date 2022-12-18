@@ -135,15 +135,6 @@ export default function ShowEvents() {
         setCredits(credits.toNumber());
     };
 
-    // async function getTimeRemaining(eventID) {
-    //     const startTime = await contract.getdeployTime(eventID);
-    //     // const curTime = await contract.getcurrentTime();
-    //     const validSecs = await contract.getvalidSeconds(eventID);
-    //     setValidTime(validSecs.toNumber());
-    //     setDeployTime(startTime.toNumber());
-    //     // setCurrentTime(curTime.toNumber());
-    // };
-
     async function getResult() {
         const res = await contract.getresult(id);
         setResult(res.toNumber());
@@ -185,14 +176,6 @@ export default function ShowEvents() {
         };    
         cred();
     });
-
-    // load remaining time of an event on rankedlist page (page = 2)
-    // useEffect(() => {
-    //     const time = async () => {
-    //         await getTimeRemaining(id);
-    //     };
-    //     time();
-    // });
 
     // function to update the display for time remaining every second
     useEffect(() => {
@@ -243,11 +226,13 @@ export default function ShowEvents() {
         {currentPage == 2 && (
             <div>
                 <button onClick={clickBack}>Back</button>
-                <p>Credits Remaining: {credits}</p>
-                <p>Deploy Time: {deployTime}</p>
-                <p>Valid Seconds: {validTime}</p>
-                <p>Poll Expires in: {calcDisplayTime()}</p>
-                { isExpired() == true && (
+                <p>Your Credits Remaining: {credits}</p>
+                <h2 className={styles.forms}>Event {id}: {title}</h2>
+                <div className={styles.infoBox}>
+                    <p>Deploy Time: {deployTime}</p>
+                    <p>Valid Seconds: {validTime}</p>
+                    <p>Poll Expires in: {calcDisplayTime()}</p>
+                    { isExpired() == true && (
                     <div>
                         <button 
                         className={styles.buttonRed} 
@@ -255,9 +240,9 @@ export default function ShowEvents() {
                         Get Results
                         </button>
                     </div>
-                )}
-                <h2 className={styles.forms}>Event {id}: {title}</h2>
-                <p>Please vote for the option(s) that you like!</p> 
+                    )}
+                </div>
+                <p>Please vote for the option(s) that you like!</p>
                 <div>
                     {options.map((each, index) => (
                         <div className={styles.optionsSection} key={index}>
