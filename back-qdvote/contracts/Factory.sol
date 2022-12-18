@@ -103,4 +103,9 @@ contract Factory {
     function getNumOptions(uint256 _pollIndex) public view returns (uint256) {
         return PollArray[_pollIndex].optionCount();
     }
+
+    // I added this
+    function getIsActive(uint256 _pollIndex) public view returns (bool) {
+        return isActive[_pollIndex];
+    }
 }

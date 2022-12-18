@@ -74,7 +74,6 @@ export default function ShowEvents() {
     async function getAllEvents() {
         const count = await getNumEvents();
         let eventArr = [];
-    
         for (let i = 0; i < count; i++) {
           const _event = await getOneEvent(i);
           _event.id = i+1;
@@ -101,7 +100,8 @@ export default function ShowEvents() {
             id: 0, // placeholder, gets changed in the next function stack call
             options: optionArr,
             deployTime: eventDeploy.toNumber(),
-            validSeconds: eventSeconds.toNumber()
+            validSeconds: eventSeconds.toNumber(),
+            isActive: 1
           };
         } else {
           return null;
@@ -136,8 +136,11 @@ export default function ShowEvents() {
     };
 
     async function getResult() {
+        // const res = await contract.getresult(id);
+        // await contract.publishResult(id);
         const res = await contract.getresult(id);
-        alert("The Winning Option Is: " + options[res].name + "!");
+        console.log(res.toNumber());
+        alert("The Winning Option Is: " + options[res.toNumber()].name + "!");
     }
 
     // calculate what time to display
