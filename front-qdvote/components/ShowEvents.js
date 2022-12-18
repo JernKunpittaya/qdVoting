@@ -137,8 +137,7 @@ export default function ShowEvents() {
 
     async function getResult() {
         const res = await contract.getresult(id);
-        setResult(res.toNumber());
-        console.log(result);
+        alert("The Winning Option Is: " + options[res].name + "!");
     }
 
     // calculate what time to display
