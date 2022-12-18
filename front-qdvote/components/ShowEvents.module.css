@@ -242,3 +242,8 @@
     padding-left: 20px;
     padding-bottom: 15px;
 }
+
+.winner {
+    color: green;
+    text-shadow: 1px 1px 1px lightgreen
+}

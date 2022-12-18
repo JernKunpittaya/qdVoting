@@ -19,6 +19,7 @@ export default function ShowEvents() {
     const [deployTime, setDeployTime] = useState(0); // deploy time of a contract
     const [currentTime, setCurrentTime] = useState(new Date()); // current time in react
     const [validTime, setValidTime] = useState(0); // valid time until expire of a contract
+    const [result, setResult] = useState("");
     // 1. is Home, 2. is inside an event to vote (rankedlist), 3. create an event page
     const [currentPage, setCurrentPage] = useState(1); 
     const d = new Date();
@@ -49,6 +50,7 @@ export default function ShowEvents() {
 
     function clickBack() {
         setCurrentPage(1);
+        setResult("");
     };
 
     function clickRanklist(e, each) {
@@ -59,6 +61,7 @@ export default function ShowEvents() {
         setOptions(each.options);
         setDeployTime(each.deployTime);
         setValidTime(each.validSeconds);
+        setResult(each.result);
     };
 
     function clickCreateEventPage() {
@@ -88,11 +91,16 @@ export default function ShowEvents() {
         const eventSeconds = await contract.getvalidSeconds(eventID);
         const eventDeploy = await contract.getdeployTime(eventID);
         const eventActive = await contract.getIsActive(eventID);
+        var eventResult = ""; // default event is empty string
         var optionArr = [];
         for (let i = 0; i < eventOptions.length; i++) {
             optionArr.push({name: eventOptions[i], description: "N/A"})
         }
-
+        if (!eventActive) { // setting the result of an event
+            const res = await contract.getresult(eventID);
+            eventResult = optionArr[res.toNumber()].name;
+            console.log(eventResult);
+        }
         if (eventTitle) {
           return {
             title: eventTitle,
@@ -100,7 +108,8 @@ export default function ShowEvents() {
             options: optionArr,
             deployTime: eventDeploy.toNumber(),
             validSeconds: eventSeconds.toNumber(),
-            isActive: eventActive // placeholder, all events start out as active
+            isActive: eventActive, 
+            result: eventResult
           };
         } else {
           return null;
@@ -134,12 +143,17 @@ export default function ShowEvents() {
         setCredits(credits.toNumber());
     };
 
-    async function getResult() {
+    async function publishResult() {
         // const res = await contract.getresult(id);
-        // await contract.publishResult(id);
+        await contract.publishResult(id);
+        displayResult();
+        // const res = await contract.getresult(id);
+        // alert("The Winning Option Is: " + options[res.toNumber()].name + "!");
+    }
+
+    async function displayResult() {
         const res = await contract.getresult(id);
-        console.log(res.toNumber());
-        alert("The Winning Option Is: " + options[res.toNumber()].name + "!");
+        setResult(options[res.toNumber()].name);
     }
 
     // calculate what time to display
@@ -239,9 +253,10 @@ export default function ShowEvents() {
                     <div>
                         <button 
                         className={styles.buttonRed} 
-                        onClick={getResult}>
+                        onClick={publishResult}>
                         Get Results
                         </button>
+                        <h3 className={styles.winner}>Winner: {result}!</h3>
                     </div>
                     )}
                 </div>
