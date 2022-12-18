@@ -16,8 +16,13 @@ export default function ShowEvents() {
     const [id, setId] = useState(0);
     const [options, setOptions] = useState([{name:"", description:""}]); // options of the current Event
     const [credits, setCredits] = useState(0);
+    const [deployTime, setDeployTime] = useState(0); // deploy time of a contract
+    const [currentTime, setCurrentTime] = useState(new Date()); // current time in react
+    const [validTime, setValidTime] = useState(0); // valid time until expire of a contract
+    const [expired, setExpired] = useState(false); // is an event expired or not
     // 1. is Home, 2. is inside an event to vote (rankedlist), 3. create an event page
     const [currentPage, setCurrentPage] = useState(1); 
+    const d = new Date();
     const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
     const chainId = parseInt(chainIdHex);
     const quadraticVotingAddress =
@@ -122,6 +127,33 @@ export default function ShowEvents() {
     async function getRemainingCredits(eventID, voterID) {
         const credits = await contract.getCredit(eventID, voterID);
         setCredits(credits.toNumber());
+    };
+
+    async function getTimeRemaining(eventID) {
+        const startTime = await contract.getdeployTime(eventID);
+        // const curTime = await contract.getcurrentTime();
+        const validSecs = await contract.getvalidSeconds(eventID);
+        setValidTime(validSecs.toNumber());
+        setDeployTime(startTime.toNumber());
+        // setCurrentTime(curTime.toNumber());
+    };
+
+    // calculate what time to display
+    function calcDisplayTime() {
+        const time = validTime - (Math.round(currentTime/1000) - deployTime)
+        if (time < 0) {
+            return "Expired"
+        }
+        return time + " seconds"
+    }
+
+    function isExpired() {
+        const time = validTime - (Math.round(currentTime/1000) - deployTime)
+        if (time < 0) {
+            return true
+        } else {
+            return false
+        }
     }
 
     useEffect(() => {
@@ -136,42 +168,25 @@ export default function ShowEvents() {
     useEffect(() => {
         const cred = async () => {
             await getRemainingCredits(id, account);
-          };
+        };    
         cred();
     });
 
-    // function addFormFields() {
-    //     setFields([...fields, 1]);
-    // }
+    useEffect(() => {
+        const time = async () => {
+            await getTimeRemaining(id);
+        };
+        time();
+    });
 
-    // function removeFormFields(index) {
-    //     const temp_fields = [...fields];
-    //     temp_fields.splice(index, 1);
-    //     setFields(temp_fields);
+    // function to update the display for time remaining every second
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
 
-    //     const temp_options = [...options];
-    //     temp_options.splice(index, 1);
-    //     setOptions(temp_options);
-    // }
-
-    // function addOption(e, index) {
-    //     var temp = [];
-    //     if (index > options.length-1) {
-    //         temp = [...options, {name:"", description:""}]
-    //     } else {
-    //         temp = [...options];
-    //     }
-    //     temp[index][e.target.name] = e.target.value;
-    //     setOptions(temp);
-    // }
-
-    // function createEvent(e) {
-    //     e.preventDefault();
-    //     // ID is auto incrementing
-    //     setEvents([...Events, { title: title, id: Events.length+1, options: options }]);
-    //     console.log(Events);
-    //     alert("Event Successfully Created");
-    // };
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <div>
@@ -214,6 +229,12 @@ export default function ShowEvents() {
             <div>
                 <button onClick={clickBack}>Back</button>
                 <p>Credits Remaining: {credits}</p>
+                <p>Poll Expires in: {calcDisplayTime()}</p>
+                { isExpired() == true && (
+                    <div>
+                        <button className={styles.buttonRed} >Get Results</button>
+                    </div>
+                )}
                 <h2 className={styles.forms}>Event {id}: {title}</h2>
                 <p>Please vote for the option(s) that you like!</p> 
                 <div>
