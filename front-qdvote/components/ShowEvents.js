@@ -75,8 +75,7 @@ export default function ShowEvents() {
         let eventArr = [];
         for (let i = 0; i < count; i++) {
           const _event = await getOneEvent(i);
-          // _event.id = i+1; // change this so first event is 0
-          _event.id = i;
+          _event.id = i; // here is 0 index like in solidity contract, +1 index only for display in frontend
           if (_event) eventArr.push(_event);
         }
         return eventArr;
@@ -88,8 +87,7 @@ export default function ShowEvents() {
         const eventOptions = await getAllOptions(eventID);
         const eventSeconds = await contract.getvalidSeconds(eventID);
         const eventDeploy = await contract.getdeployTime(eventID);
-        // const eventActive = await contract
-        // const eventOptions = await contract.getOpTitle(eventID, 0);
+        const eventActive = await contract.getIsActive(eventID);
         var optionArr = [];
         for (let i = 0; i < eventOptions.length; i++) {
             optionArr.push({name: eventOptions[i], description: "N/A"})
@@ -102,7 +100,7 @@ export default function ShowEvents() {
             options: optionArr,
             deployTime: eventDeploy.toNumber(),
             validSeconds: eventSeconds.toNumber(),
-            isActive: 1 // placeholder, all events start out as active
+            isActive: eventActive // placeholder, all events start out as active
           };
         } else {
           return null;
@@ -215,7 +213,8 @@ export default function ShowEvents() {
                                 onClick={ (e) => clickRanklist(e, each) }
                                 key={each.id}
                                 >
-                                    Event {each.id}:
+                                    {/* plus 1 indexing for display only */}
+                                    Event {each.id+1}:
                                     <br></br>
                                     <br></br>
                                     {each.title}
@@ -230,7 +229,8 @@ export default function ShowEvents() {
             <div>
                 <button onClick={clickBack}>Back</button>
                 <p>Your Credits Remaining: {credits}</p>
-                <h2 className={styles.forms}>Event {id}: {title}</h2>
+                {/* plus 1 index for display only */}
+                <h2 className={styles.forms}>Event {id+1}: {title}</h2>
                 <div className={styles.infoBox}>
                     <p>Deploy Time: {deployTime}</p>
                     <p>Valid Seconds: {validTime}</p>
