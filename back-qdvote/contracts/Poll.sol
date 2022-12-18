@@ -74,6 +74,7 @@ contract Poll {
 
     function positiveVote(address voter, uint256 optionId, uint256 weight) public payable {
         require(msg.sender == factory, "Not called via Fac");
+        require(block.timestamp <= deployTime + validSeconds, "Poll time expired!");
         require(existsEligible(voter), "Not Eligible");
 
         Option storage option = options[optionId];
@@ -97,6 +98,7 @@ contract Poll {
 
     function negativeVote(address voter, uint256 optionId, uint256 weight) public payable {
         require(msg.sender == factory, "Not called via Fac");
+        require(block.timestamp <= deployTime + validSeconds, "Poll time expired!");
         require(existsEligible(voter), "Not eligible");
 
         Option storage option = options[optionId];
