@@ -19,7 +19,7 @@ export default function ShowEvents() {
     const [deployTime, setDeployTime] = useState(0); // deploy time of a contract
     const [currentTime, setCurrentTime] = useState(new Date()); // current time in react
     const [validTime, setValidTime] = useState(0); // valid time until expire of a contract
-    const [expired, setExpired] = useState(false); // is an event expired or not
+    const [result, setResult] = useState(0); // result of a poll 
     // 1. is Home, 2. is inside an event to vote (rankedlist), 3. create an event page
     const [currentPage, setCurrentPage] = useState(1); 
     const d = new Date();
@@ -58,6 +58,8 @@ export default function ShowEvents() {
         setTitle(each.title);
         setId(each.id);
         setOptions(each.options);
+        setDeployTime(each.deployTime);
+        setValidTime(each.validSeconds);
     };
 
     function clickCreateEventPage() {
@@ -85,6 +87,8 @@ export default function ShowEvents() {
     async function getOneEvent(eventID) {
         const eventTitle = await contract.getTitle(eventID);
         const eventOptions = await getAllOptions(eventID);
+        const eventSeconds = await contract.getvalidSeconds(eventID);
+        const eventDeploy = await contract.getdeployTime(eventID);
         // const eventOptions = await contract.getOpTitle(eventID, 0);
         var optionArr = [];
         for (let i = 0; i < eventOptions.length; i++) {
@@ -95,7 +99,9 @@ export default function ShowEvents() {
           return {
             title: eventTitle,
             id: 0, // placeholder, gets changed in the next function stack call
-            options: optionArr
+            options: optionArr,
+            deployTime: eventDeploy.toNumber(),
+            validSeconds: eventSeconds.toNumber()
           };
         } else {
           return null;
@@ -129,14 +135,20 @@ export default function ShowEvents() {
         setCredits(credits.toNumber());
     };
 
-    async function getTimeRemaining(eventID) {
-        const startTime = await contract.getdeployTime(eventID);
-        // const curTime = await contract.getcurrentTime();
-        const validSecs = await contract.getvalidSeconds(eventID);
-        setValidTime(validSecs.toNumber());
-        setDeployTime(startTime.toNumber());
-        // setCurrentTime(curTime.toNumber());
-    };
+    // async function getTimeRemaining(eventID) {
+    //     const startTime = await contract.getdeployTime(eventID);
+    //     // const curTime = await contract.getcurrentTime();
+    //     const validSecs = await contract.getvalidSeconds(eventID);
+    //     setValidTime(validSecs.toNumber());
+    //     setDeployTime(startTime.toNumber());
+    //     // setCurrentTime(curTime.toNumber());
+    // };
+
+    async function getResult() {
+        const res = await contract.getresult(id);
+        setResult(res.toNumber());
+        console.log(result);
+    }
 
     // calculate what time to display
     function calcDisplayTime() {
@@ -156,6 +168,7 @@ export default function ShowEvents() {
         }
     }
 
+    // called on start to load all events on home page (page = 1)
     useEffect(() => {
         const set = async () => {
             await getAllEvents().then((result) => {
@@ -165,6 +178,7 @@ export default function ShowEvents() {
         set();
     }, []);
 
+    // load remaining credits of an event on rankedlist page (page = 2)
     useEffect(() => {
         const cred = async () => {
             await getRemainingCredits(id, account);
@@ -172,12 +186,13 @@ export default function ShowEvents() {
         cred();
     });
 
-    useEffect(() => {
-        const time = async () => {
-            await getTimeRemaining(id);
-        };
-        time();
-    });
+    // load remaining time of an event on rankedlist page (page = 2)
+    // useEffect(() => {
+    //     const time = async () => {
+    //         await getTimeRemaining(id);
+    //     };
+    //     time();
+    // });
 
     // function to update the display for time remaining every second
     useEffect(() => {
@@ -229,10 +244,16 @@ export default function ShowEvents() {
             <div>
                 <button onClick={clickBack}>Back</button>
                 <p>Credits Remaining: {credits}</p>
+                <p>Deploy Time: {deployTime}</p>
+                <p>Valid Seconds: {validTime}</p>
                 <p>Poll Expires in: {calcDisplayTime()}</p>
                 { isExpired() == true && (
                     <div>
-                        <button className={styles.buttonRed} >Get Results</button>
+                        <button 
+                        className={styles.buttonRed} 
+                        onClick={getResult}>
+                        Get Results
+                        </button>
                     </div>
                 )}
                 <h2 className={styles.forms}>Event {id}: {title}</h2>
