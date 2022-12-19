@@ -26,5 +26,14 @@ module.exports = {
         deployer: {
             default: 0,
         },
+        eligible1: {
+            default: 1,
+        },
+        eligible2: {
+            default: 2,
+        },
+        non_eligible: {
+            default: 3,
+        },
     },
 }

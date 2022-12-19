@@ -104,6 +104,14 @@ contract Factory {
         return PollArray[_pollIndex].optionCount();
     }
 
+    function getNumEligibles(uint256 _pollIndex) public view returns (uint256) {
+        return PollArray[_pollIndex].getNumEligibles();
+    }
+
+    function getEligible(uint256 _pollIndex, uint256 index) public view returns (address) {
+        return PollArray[_pollIndex].eligibles(index);
+    }
+
     // I added this
     function getIsActive(uint256 _pollIndex) public view returns (bool) {
         return isActive[_pollIndex];

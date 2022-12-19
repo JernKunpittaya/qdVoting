@@ -22,7 +22,7 @@ contract Poll {
     address factory;
     address public admin;
     string public title;
-    address[] eligibles;
+    address[] public eligibles;
 
     event Voted(uint256 optionId, uint256 weight, bool isPositive);
 
@@ -163,6 +163,10 @@ contract Poll {
 
     function getVoterOpNegativeWeight(uint optionId, address voter) public view returns (uint256) {
         return options[optionId].negativeVotes[voter];
+    }
+
+    function getNumEligibles() public view returns (uint256) {
+        return eligibles.length;
     }
 
     function currentWeight(
