@@ -31,7 +31,7 @@ contract Poll {
         string memory _title,
         address[] memory _eligibles,
         string[] memory _opTitle,
-        uint256 _validMinutes
+        uint256 _validSeconds
     ) {
         factory = msg.sender;
         admin = _admin;
@@ -39,7 +39,7 @@ contract Poll {
         eligibles = _eligibles;
         optionCount = _opTitle.length;
         deployTime = block.timestamp;
-        validSeconds = _validMinutes * 60;
+        validSeconds = _validSeconds;
         for (uint i = 0; i < _eligibles.length; i++) {
             creditVoters[_eligibles[i]] = creditLimit;
         }

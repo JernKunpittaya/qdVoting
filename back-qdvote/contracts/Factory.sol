@@ -14,9 +14,9 @@ contract Factory {
         string memory _title,
         address[] memory _eligibles,
         string[] memory _opTitle,
-        uint256 _validMinutes
+        uint256 _validSeconds
     ) public {
-        PollArray.push(new Poll(msg.sender, _title, _eligibles, _opTitle, _validMinutes));
+        PollArray.push(new Poll(msg.sender, _title, _eligibles, _opTitle, _validSeconds));
         emit PollCreated(_title);
         isActive.push(true);
         results.push(0);
