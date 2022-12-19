@@ -1,6 +1,4 @@
-Demo Quadratic Voting 
-
-Note: This demo only for localhost, not for testnet yet
+#Quadratic Voting Application 
 
 Smart contract tests:
 ![My Image](testcases_pic.png)
