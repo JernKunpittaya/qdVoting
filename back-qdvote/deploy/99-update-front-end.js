@@ -27,7 +27,7 @@ async function updateAbi() {
     //     FRONT_END_ABI_FILE,
     //     factoryVoting.interface.format(ethers.utils.FormatTypes.json)
     // )
-    fs.writeFileSync(FRONT_END_ABI_FILE, deployment.abi)
+    fs.writeFileSync(FRONT_END_ABI_FILE, JSON.stringify(deployment.abi))
 }
 
 async function updateContractAddresses() {
