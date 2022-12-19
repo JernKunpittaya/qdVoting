@@ -49,7 +49,7 @@ export default function CreateItem() {
               placeholder="Title"
               required
               onChange={(e) => setTitle(e.target.value)}
-              className = {styles.input}
+              className={styles.input}
             />
             <br />
             <textarea
@@ -61,7 +61,7 @@ export default function CreateItem() {
               cols="40"
             />
             <br />
-            <input type="submit" className= {styles.button}/>
+            <input type="submit" className={styles.button} />
           </form>
         </div>
       )}

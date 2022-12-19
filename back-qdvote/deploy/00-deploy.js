@@ -1,10 +1,11 @@
-//const { network } = require("hardhat")
+const { network, ethers } = require("hardhat")
+
 module.exports = async function ({ getNamedAccounts, deployments }) {
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
+    const chainId = network.config.chainId
     console.log("Deploying....")
     await deploy("Factory", {
-        contract: "Factory",
         from: deployer,
         log: true,
     })
