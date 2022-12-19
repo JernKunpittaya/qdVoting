@@ -1,4 +1,4 @@
-#Quadratic Voting Application 
+# Quadratic Voting Application 
 
 Smart contract tests:
 ![My Image](testcases_pic.png)
