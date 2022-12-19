@@ -12,7 +12,7 @@ export default function CreatePoll() {
   const [eligibleFields, setEligibleFields] = useState([1]); // number of textfields for eligible voters
   const [eligibles, setEligibles] = useState([""]); // addresses that are eligible to vote
   const [options, setOptions] = useState([{ name: "", description: "" }]); // options of the current Event
-  const [validSecs, setValidSecs] = useState(1200); // default 1200 seconds
+  const [validMins, setValidMins] = useState(1200); // default 1200 seconds
   const { chainId: chainIdHex, web3, isWeb3Enabled, account } = useMoralis();
   const chainId = parseInt(chainIdHex);
   const quadraticVotingAddress =
@@ -102,8 +102,9 @@ export default function CreatePoll() {
     console.log(title);
     console.log(optionNames);
     console.log(eligibles);
-    console.log(validSecs);
-    await contract.createPoll(title, eligibles, optionNames, validSecs);
+    console.log(validMins);
+    // convert to seconds when deploying
+    await contract.createPoll(title, eligibles, optionNames, validMins*60); 
     alert("Event Successfully Created");
   }
 
@@ -201,7 +202,7 @@ export default function CreatePoll() {
           type="text"
           placeholder="1200"
           required
-          onChange={(e) => setValidSecs(e.target.value)}
+          onChange={(e) => setValidMins(e.target.value)}
           className={styles.input}
         />
         <br />
