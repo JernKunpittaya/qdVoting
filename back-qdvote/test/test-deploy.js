@@ -67,20 +67,6 @@ describe("Poll Contract", function () {
             assert.include(err.message, "revert", "Not eligible")
         }
     })
-    it("Non eligible voter cannot vote, has credit 0", async function () {
-        const [, , , non_eligible, outsider] = await ethers.getSigners()
-        assert.equal(await Factory.getCredit(0, non_eligible.address), 0)
-        try {
-            await Factory.connect(non_eligible).positiveVote(0, 0, 1)
-        } catch (err) {
-            assert.include(err.message, "revert", "Not eligible")
-        }
-        try {
-            await Factory.connect(non_eligible).negativeVote(0, 0, 1)
-        } catch (err) {
-            assert.include(err.message, "revert", "Not eligible")
-        }
-    })
     it("Eligible voter has credit 100", async function () {
         const [, , eli1] = await ethers.getSigners()
         assert.equal(await Factory.getCredit(0, eli1.address), 100)
