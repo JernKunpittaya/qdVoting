@@ -196,7 +196,7 @@ export default function CreatePoll() {
         </button>
         <br />
         <h3 className={styles.title}>
-          & enter how long poll will last (in seconds):
+          & enter how long poll will last (in minutes):
         </h3>
         <input
           type="text"

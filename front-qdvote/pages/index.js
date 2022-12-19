@@ -2,8 +2,6 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import Header from "../components/Header";
-import CreateItem from "../components/CreateItem";
-import Rankedlist from "../components/Rankedlist";
 import ShowEvents from "../components/ShowEvents";
 import { useState, useEffect } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";

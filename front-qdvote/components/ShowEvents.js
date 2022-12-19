@@ -256,7 +256,7 @@ export default function ShowEvents() {
                         onClick={publishResult}>
                         Get Results
                         </button>
-                        <h3 className={styles.winner}>Winner: {result}!</h3>
+                        <h3 className={styles.winner}>Winner: {result}</h3>
                     </div>
                     )}
                 </div>
