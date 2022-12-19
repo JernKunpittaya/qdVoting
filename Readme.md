@@ -3,7 +3,7 @@ Demo Quadratic Voting
 Note: This demo only for localhost, not for testnet yet
 
 Smart contract tests:
-![My Image](/testcases_pic.png)
+![My Image](testcases_pic.png)
 
 Instructions
 -Git clone ........
