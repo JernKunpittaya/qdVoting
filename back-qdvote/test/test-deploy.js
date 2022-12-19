@@ -13,16 +13,7 @@ describe("Factory Contract", function () {
         await deployments.fixture(["all"])
         Factory = await ethers.getContract("Factory", deployer)
     })
-    it("should be a valid contract address", async function () {
-        let address = Factory.address
-        console.log("address", address)
-        assert.notEqual(address, null)
-        assert.notEqual(address, 0x0)
-        assert.notEqual(address, "")
-        assert.notEqual(address, undefined)
-    })
-
-    it("should create poll successfully", async function () {
+     it("Should create poll successfully", async function () {
         const [, eligible1, eligible2] = await ethers.getSigners()
         await Factory.createPoll(
             "pet",
@@ -41,6 +32,14 @@ describe("Factory Contract", function () {
         assert.equal(await Factory.getOpTitle(0, 2), "fish")
         assert.equal(await Factory.getvalidSeconds(0), 10)
         assert.equal(await Factory.isActive(0), true)
+    })
+    it("Should be a valid contract address", async function () {
+        let address = Factory.address
+        console.log("address", address)
+        assert.notEqual(address, null)
+        assert.notEqual(address, 0x0)
+        assert.notEqual(address, "")
+        assert.notEqual(address, undefined)
     })
 })
 describe("Poll Contract", function () {
@@ -65,11 +64,6 @@ describe("Poll Contract", function () {
             assert.include(err.message, "revert", "Not eligible")
         }
     })
-    it("Eligible voter has credit 100", async function () {
-        const [, eli1, eli2] = await ethers.getSigners()
-        await Factory.createPoll("pet", [eli1.address, eli2.address], ["dog", "cat", "fish"], 10)
-        assert.equal(await Factory.getCredit(0, eli1.address), 100)
-    })
     it("Eligible voter, credit + option weight change correctly", async function () {
         const [, eli1, eli2] = await ethers.getSigners()
         await Factory.createPoll("pet", [eli1.address, eli2.address], ["dog", "cat", "fish"], 10)
@@ -78,6 +72,12 @@ describe("Poll Contract", function () {
         assert.equal(await Factory.getCredit(0, eli1.address), 91)
         assert.equal(await Factory.getOpPositiveWeight(0, 0), 3)
     })
+    it("Eligible voter has credit 100", async function () {
+        const [, eli1, eli2] = await ethers.getSigners()
+        await Factory.createPoll("pet", [eli1.address, eli2.address], ["dog", "cat", "fish"], 10)
+        assert.equal(await Factory.getCredit(0, eli1.address), 100)
+    })
+
     it("Eligible voter can change their vote", async function () {
         const [, eli1, eli2] = await ethers.getSigners()
         await Factory.createPoll("pet", [eli1.address, eli2.address], ["dog", "cat", "fish"], 10)
@@ -109,17 +109,7 @@ describe("Poll Contract", function () {
         assert.equal(await Factory.getOpNegativeWeight(0, 0), 0)
         assert.equal(await Factory.getCredit(0, eli1.address), 84)
     })
-    it("Eligible voter can't vote more than 100 credit", async function () {
-        const [, eli1, eli2] = await ethers.getSigners()
-        await Factory.createPoll("pet", [eli1.address, eli2.address], ["dog", "cat", "fish"], 10)
-        assert.equal(await Factory.getCredit(0, eli1.address), 100)
-        try {
-            await Factory.connect(eli1).positiveVote(0, 0, 11)
-        } catch (err) {
-            assert.include(err.message, "revert", "Not enough credit")
-        }
-    })
-    it("2 Eligible voter makes correct overall weight for option", async function () {
+     it("2 Eligible voter makes correct overall weight for option", async function () {
         const [, eli1, eli2] = await ethers.getSigners()
         await Factory.createPoll("pet", [eli1.address, eli2.address], ["dog", "cat", "fish"], 10)
         await Factory.connect(eli1).positiveVote(0, 0, 3)
@@ -145,6 +135,16 @@ describe("Poll Contract", function () {
             await Factory.connect(eli1).positiveVote(0, 0, 5)
         } catch (err) {
             assert.include(err.message, "revert", "Poll time expired!")
+        }
+    })
+    it("Eligible voter can't vote more than 100 credit", async function () {
+        const [, eli1, eli2] = await ethers.getSigners()
+        await Factory.createPoll("pet", [eli1.address, eli2.address], ["dog", "cat", "fish"], 10)
+        assert.equal(await Factory.getCredit(0, eli1.address), 100)
+        try {
+            await Factory.connect(eli1).positiveVote(0, 0, 11)
+        } catch (err) {
+            assert.include(err.message, "revert", "Not enough credit")
         }
     })
     it("Cannot get result before time expires", async function () {
