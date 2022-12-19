@@ -3,7 +3,7 @@ Demo Quadratic Voting
 Note: This demo only for localhost, not for testnet yet
 
 Smart contract tests:
-![11 test cases passed](/testcases_pic.png "11 test cases passed")
+![My Image](testcases_pic.png)
 
 Instructions
 -Git clone ........
