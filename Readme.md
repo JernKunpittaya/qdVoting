@@ -32,7 +32,7 @@ Smart contract tests:
 
 ## References:
 
-Basic logic inspired from [Figment](https://learn.figment.io/tutorials/build-a-quadratic-voting-dapp)
+Basic logic inspired from [Figment](https://learn.figment.io/tutorials/build-a-quadratic-voting-dapp) <br>
 Development stack is Hardhat+ Next.js from this [video](https://www.youtube.com/watch?v=gyMwXuJrbJQ&t=63666s&ab_channel=freeCodeCamp.org)
 
 ## Security Design
