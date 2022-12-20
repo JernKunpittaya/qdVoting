@@ -1,4 +1,5 @@
-# Quadratic Voting Application 
+# Quadratic Voting Application
+
 Teammates: Jern Kunpitaya (tk2862@columbia.edu), Forest Shi (fs2751@columbia.edu), Tasha Pais (tdp2129@columbia.edu)
 
 Deployment link: https://quadratic-voting-lyart.vercel.app/ <br>
@@ -12,26 +13,36 @@ Smart contract tests:
 
 1. `git clone https://github.com/JernKunpittaya/qdVoting.git` <br>
 2. Setup backend <br>
-  `cd back-qdvote` <br>
-  `yarn` <br>
-  create .env file with the text below for future sake of testnet + auto link backend abi/contract address to frontend: <br>
-  MATIC_RPC_URL = https://rpc-mumbai.maticvigil.com/v1/1c3ac566f4a286bfb47da26b301c733b7d2f1868 <br>
-  PRIVATE_KEY = [from Metamask account] <br>
-  UPDATE_FRONT_END=true! <br>
- 3. Test backend <br>
-  `yarn hardhat test` <br>
- 4. Deploy backend to localhost <br>
-  `yarn hardhat node` [take note of private keys of generated accounts] <br>
-  `yarn hardhat deploy —-network localhost` [make sure to use two dashes] <br>
- 5. Setup frontend <br>
-  `cd front-qdvote` <br>
-  `yarn` <br>
-  `yarn dev` <br>
-  6. Import your localhost private key in Metamask, add localhost network and play around. Local host may get confused sometimes, so use setting--> advanced--> reset account for your auto-generated address in metamask. [dont mess up your real account]
+   `cd back-qdvote` <br>
+   `yarn` <br>
+   create .env file with the text below for future sake of testnet + auto link backend abi/contract address to frontend: <br>
+   MATIC_RPC_URL = https://rpc-mumbai.maticvigil.com/v1/1c3ac566f4a286bfb47da26b301c733b7d2f1868 <br>
+   PRIVATE_KEY = [from Metamask account] <br>
+   UPDATE_FRONT_END=true! <br>
+3. Test backend <br>
+   `yarn hardhat test` <br>
+4. Deploy backend to localhost <br>
+   `yarn hardhat node` [take note of private keys of generated accounts] <br>
+   `yarn hardhat deploy —-network localhost` [make sure to use two dashes] <br>
+5. Setup frontend <br>
+   `cd front-qdvote` <br>
+   `yarn` <br>
+   `yarn dev` <br>
+6. Import your localhost private key in Metamask, add localhost network and play around. Local host may get confused sometimes, so use setting--> advanced--> reset account for your auto-generated address in metamask. [dont mess up your real account]
 
 ## References:
+
 Basic logic inspired from [Figment](https://learn.figment.io/tutorials/build-a-quadratic-voting-dapp)
 Development stack is Hardhat+ Next.js from this [video](https://www.youtube.com/watch?v=gyMwXuJrbJQ&t=63666s&ab_channel=freeCodeCamp.org)
+
+## Security Design
+
+Here are security design we've covered for this voting platform to be rigid.
+
+1. Make sure people cannot vote after the poll time expires, this is to prevent people from changing the record of the result. We explicitly specify "require" statement in contract to enforce this to vote function in Poll contract <br>
+2. Make sure anyone can publish the result after the poll time expires. We don't grant an authority to certain people to publish the result since that can lead to centralized fraud. Hence, any wallet address, once the time of the poll is up, can click to publish the result of that poll. (Note that time became tricky when we deploy localhost since no block is mined if there is no transaction, so we included dummy transaction in the publishResult method to make sure time proceed everytime on blockchain when someone tries to publish the result. This became trivial once we deploy to Matic Testnet since there are many transactions all the time. <br>
+3. On the other hand, no-one can publish or get the winning result of the poll before the time expires. Although they can see the current vote on each option, they cannot trick the contract to store that as winning option since we specify require statement to only be able to publish result once time is up. This is to prevent people from just publishing result once they see their preferred option is winning. <br>
+4. We make sure that only the eligible people in a certain poll can vote in that poll. However, we can see that calling the vote function in Poll contract allows for possible exploit since an attacker can just pass argument as an address of eligible voter to vote, despite they are not eligible themselves. We prevent this exploit by requiring the caller of vote function in Poll.sol are only from our Factory.sol. And in our Factory.sol, the only function that interact with Poll.sol is taking the msg.sender and pass as argument to the vote function in Poll.sol, making sure that Factory only passes argument as the address of the caller. Hence, only eligible voter can vote in that poll! <br>
 
 ## What pain point are we addressing?
 

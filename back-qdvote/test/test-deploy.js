@@ -13,7 +13,7 @@ describe("Factory Contract", function () {
         await deployments.fixture(["all"])
         Factory = await ethers.getContract("Factory", deployer)
     })
-     it("Should create poll successfully", async function () {
+    it("Should create poll successfully", async function () {
         const [, eligible1, eligible2] = await ethers.getSigners()
         await Factory.createPoll(
             "pet",
@@ -109,7 +109,7 @@ describe("Poll Contract", function () {
         assert.equal(await Factory.getOpNegativeWeight(0, 0), 0)
         assert.equal(await Factory.getCredit(0, eli1.address), 84)
     })
-     it("2 Eligible voter makes correct overall weight for option", async function () {
+    it("2 Eligible voter makes correct overall weight for option", async function () {
         const [, eli1, eli2] = await ethers.getSigners()
         await Factory.createPoll("pet", [eli1.address, eli2.address], ["dog", "cat", "fish"], 10)
         await Factory.connect(eli1).positiveVote(0, 0, 3)
@@ -164,6 +164,7 @@ describe("Poll Contract", function () {
         await Factory.connect(eli2).positiveVote(0, 1, 7)
         console.log("waiting for >5 seconds")
         await sleep(6000)
+        await Factory.publishResult(0)
         assert.equal(await Factory.connect(eli1).getresult(0), 1)
     })
 })
