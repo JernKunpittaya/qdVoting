@@ -9,6 +9,10 @@ Deployment link: https://quadratic-voting-lyart.vercel.app/ <br>
 Smart contract tests:
 ![My Image](testcases_pic.png)
 
+## Instructions to use the web application:
+Make sure to change the network settings in your Metamask like so:
+![Second Image](metamask.png)
+
 ## Instructions to run locally (for development):
 
 1. `git clone https://github.com/JernKunpittaya/qdVoting.git` <br>
