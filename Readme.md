@@ -2,6 +2,7 @@
 Teammates: Jern Kunpitaya (tk2862@columbia.edu), Forest Shi (fs2751@columbia.edu), Tasha Pais (tdp2129@columbia.edu)
 
 Deployment link: https://quadratic-voting-lyart.vercel.app/ <br>
+
 [Pitch deck](https://drive.google.com/file/d/1LU-ehyBrtnmpiXlgzYoBJ8swEkatdVtM/view?usp=share_link)
 
 Smart contract tests:
