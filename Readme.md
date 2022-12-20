@@ -1,4 +1,5 @@
 # Quadratic Voting Application
+Here are a few sources that explain the power of Quadratic Voting: [Vitalik's Blog Post](https://vitalik.ca/general/2019/12/07/quadratic.html) and [RadicalxChange](https://www.radicalxchange.org/concepts/plural-voting/)
 
 Teammates: Jern Kunpitaya (tk2862@columbia.edu), Forest Shi (fs2751@columbia.edu), Tasha Pais (tdp2129@columbia.edu)
 
