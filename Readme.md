@@ -1,48 +1,34 @@
 # Quadratic Voting Application 
-
+Teammates: Jern Kunpitaya (tk2862@columbia.edu), Forest Shi (fs2751@columbia.edu), Tasha Pais (tdp2129@columbia.edu)
 Try it out yourself: https://quadratic-voting-lyart.vercel.app/
 
 Smart contract tests:
 ![My Image](testcases_pic.png)
 
-Instructions
--Git clone ........
-
-Set up backend
--cd back-qdvote
--yarn
--Crate your .env file [for future sake of testnet + auto link backend abi/contract address to frontend]
-.env example
-MATIC_RPC_URL = https://rpc-mumbai.maticvigil.com/v1/..........
-PRIVATE_KEY = 8.......e [done use real one lol]
-UPDATE_FRONT_END=true
-
-Test backend
--yarn hardhat test 
-
-Deploy backend to localhost
--yarn hardhat node [take note of private keys of generated accounts]
--yarn hardhat deploy —-network localhost (make sure to use two dashes)
-
-
-Set up frontend
--cd front-qdvote
--yarn
--yarn dev 
-
-btw this error below sometimes come up, but it seems not breaking anything
-Ignore Unhandled Runtime Error
-TypeError: Cannot read properties of undefined (reading 'itemCount')
-
-
-Test App
--Import your localhost private key in Metamask, add localhost network and play around
--Local host may get confused sometimes, so use setting--> advanced--> reset account for 
-your auto-generated address in metamask. [dont mess up your real account.]
+Instructions to run locally (for development):
+1. $git clone https://github.com/JernKunpittaya/qdVoting.git
+2. Setup backend 
+  * $cd back-qdvote
+  * $yarn
+  * create .env file with the text below for future sake of testnet + auto link backend abi/contract address to frontend:
+    MATIC_RPC_URL = https://rpc-mumbai.maticvigil.com/v1/1c3ac566f4a286bfb47da26b301c733b7d2f1868
+    PRIVATE_KEY = [from Metamask account]
+    UPDATE_FRONT_END=true![image](https://user-images.githubusercontent.com/32210691/208552812-c03f0708-d4e5-4bf6-8369-56afd800f15e.png)
+ 3. Test backend
+  * $yarn hardhat test
+ 4. Deploy backend to localhost 
+  * $yarn hardhat node [take note of private keys of generated accounts]
+  * $yarn hardhat deploy —-network localhost [make sure to use two dashes]
+ 5. Setup frontend
+  * $cd front-qdvote
+  * $yarn
+  * $yarn dev 
+  6. Import your localhost private key in Metamask, add localhost network and play around
+  * Local host may get confused sometimes, so use setting--> advanced--> reset account for your auto-generated address in metamask. [dont mess up your real account
 
 References:
 Basic logic inspired from: https://learn.figment.io/tutorials/build-a-quadratic-voting-dapp
-Development stack is from: Hardhat, NextJS(basically React) inspired from https://www.youtube.com/watch?v=gyMwXuJrbJQ&t=63666s&ab_channel=freeCodeCamp.org
+Development stack inspired from: Hardhat, NextJS(basically React) inspired from https://www.youtube.com/watch?v=gyMwXuJrbJQ&t=63666s&ab_channel=freeCodeCamp.org
 
 What pain point are we addressing?
 
