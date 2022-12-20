@@ -22,11 +22,11 @@ Smart contract tests:
   `yarn hardhat node` [take note of private keys of generated accounts]
   `yarn hardhat deploy —-network localhost` [make sure to use two dashes]
  5. Setup frontend
-  `cd front-qdvote`
-  `yarn`
-  `yarn dev`
-  6. Import your localhost private key in Metamask, add localhost network and play around
-  * Local host may get confused sometimes, so use setting--> advanced--> reset account for your auto-generated address in metamask. [dont mess up your real account
+  `cd front-qdvote` <br>
+  `yarn` <br>
+  `yarn dev` <br>
+  6. Import your localhost private key in Metamask, add localhost network and play around <br>
+Local host may get confused sometimes, so use setting--> advanced--> reset account for your auto-generated address in metamask. [dont mess up your real account
 
 References:
 Basic logic inspired from: https://learn.figment.io/tutorials/build-a-quadratic-voting-dapp
