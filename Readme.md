@@ -9,19 +9,19 @@ Smart contract tests:
 ## Instructions to run locally (for development):
 
 1. `git clone https://github.com/JernKunpittaya/qdVoting.git`
-2. Setup backend 
-  `cd back-qdvote`
-  `yarn`
-  create .env file with the text below for future sake of testnet + auto link backend abi/contract address to frontend:
-    MATIC_RPC_URL = https://rpc-mumbai.maticvigil.com/v1/1c3ac566f4a286bfb47da26b301c733b7d2f1868
-    PRIVATE_KEY = [from Metamask account]
-    UPDATE_FRONT_END=true![image](https://user-images.githubusercontent.com/32210691/208552812-c03f0708-d4e5-4bf6-8369-56afd800f15e.png)
- 3. Test backend
-  `yarn hardhat test`
- 4. Deploy backend to localhost 
-  `yarn hardhat node` [take note of private keys of generated accounts]
-  `yarn hardhat deploy —-network localhost` [make sure to use two dashes]
- 5. Setup frontend
+2. Setup backend <br>
+  `cd back-qdvote` <br>
+  `yarn` <br>
+  create .env file with the text below for future sake of testnet + auto link backend abi/contract address to frontend: <br>
+  MATIC_RPC_URL = https://rpc-mumbai.maticvigil.com/v1/1c3ac566f4a286bfb47da26b301c733b7d2f1868
+  PRIVATE_KEY = [from Metamask account]
+  UPDATE_FRONT_END=true![image](https://user-images.githubusercontent.com/32210691/208552812-c03f0708-d4e5-4bf6-8369-56afd800f15e.png)
+ 3. Test backend <br>
+  `yarn hardhat test` <br>
+ 4. Deploy backend to localhost <br>
+  `yarn hardhat node` [take note of private keys of generated accounts] <br>
+  `yarn hardhat deploy —-network localhost` [make sure to use two dashes] <br>
+ 5. Setup frontend <br>
   `cd front-qdvote` <br>
   `yarn` <br>
   `yarn dev` <br>
