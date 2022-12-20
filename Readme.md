@@ -1,8 +1,8 @@
 # Quadratic Voting Application 
 Teammates: Jern Kunpitaya (tk2862@columbia.edu), Forest Shi (fs2751@columbia.edu), Tasha Pais (tdp2129@columbia.edu)
 
-Try it out yourself [here](https://quadratic-voting-lyart.vercel.app/)
-Pitch deck [here](https://drive.google.com/file/d/1LU-ehyBrtnmpiXlgzYoBJ8swEkatdVtM/view?usp=share_link)
+Try it out yourself here:https://quadratic-voting-lyart.vercel.app/ <br>
+[Pitch deck](https://drive.google.com/file/d/1LU-ehyBrtnmpiXlgzYoBJ8swEkatdVtM/view?usp=share_link)
 
 Smart contract tests:
 ![My Image](testcases_pic.png)
