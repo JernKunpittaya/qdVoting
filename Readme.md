@@ -30,7 +30,7 @@ Smart contract tests:
   6. Import your localhost private key in Metamask, add localhost network and play around. Local host may get confused sometimes, so use setting--> advanced--> reset account for your auto-generated address in metamask. [dont mess up your real account]
 
 ## References:
-Basic logic inspired from [Figment](https://learn.figment.io/tutorials/build-a-quadratic-voting-dapp)
+Basic logic inspired from [Figment](https://learn.figment.io/tutorials/build-a-quadratic-voting-dapp) <br>
 Development stack is Hardhat+ Next.js from this [video](https://www.youtube.com/watch?v=gyMwXuJrbJQ&t=63666s&ab_channel=freeCodeCamp.org)
 
 ## What pain point are we addressing?
