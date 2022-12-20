@@ -104,7 +104,7 @@ export default function CreatePoll() {
     console.log(eligibles);
     console.log(validMins);
     // convert to seconds when deploying
-    await contract.createPoll(title, eligibles, optionNames, validMins*60); 
+    await contract.createPoll(title, eligibles, optionNames, validMins); 
     alert("Event Successfully Created");
   }
 
